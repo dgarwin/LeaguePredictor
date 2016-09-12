@@ -5,9 +5,14 @@ import unittest
 class test_lol_api(unittest.TestCase):
 	def setUp(self):
 		self.api = lol_api()
+		self.player_id = 20649224
+	def test_solo_division(self):
+		val = self.api.solo_division([self.player_id])
+		self.assertEqual(1, len(val))
+		self.assertEqual('SILVER', val[self.player_id])
 	def test_get_players_recent_games(self):
 		try:
-			self.api.recent_games(20649224)
+			self.api.recent_games(self.player_id)
 		except Exception, e:
 			self.fail(e)
 class test_player_collection(unittest.TestCase):
