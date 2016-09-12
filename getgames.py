@@ -21,6 +21,9 @@ class player_collection():
 	def add(self, player_id, player_stats):
 		pass
 
+	def get_player_ids(self, recent_games):
+		return [player['summonerId'] for game in recent_games['games'] for player in game['fellowPlayers'] ]
+
 	def full(self):
 		if len(self.raw) >= self.size:
 			per_div_min = self.size / len(self.division_counts)
