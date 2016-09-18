@@ -52,8 +52,11 @@ class LolApi:
                 response = urlopen(request)
                 break
             except URLError, e:
-                print url + ' ' + str(e)
-                time.sleep(10)
+                if e.code == 429:
+                    print 'Too many requests'
+                    time.sleep(10)
+                else:
+                    raise e
         now = datetime.now()
         self.short_req.append(now)
         self.long_req.append(now)

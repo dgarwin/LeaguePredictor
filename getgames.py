@@ -7,16 +7,14 @@ import progressbar
 # main logic loop
 def get_players(seed_player_id, max_players=10000):
     api = LolApi()
-    players = PlayerCollection(max_players, api)
+    players = PlayerCollection(api, max_players)
     queue = deque([seed_player_id])
     buff = {}
-    last_progress = 0
-    with progressbar.ProgressBar(max_value=100) as progress:
-        # Progress bar
-        current_progress = 100 * len(players.raw) / max_players
-        if  current_progress > last_progress:
-            progress.update(current_progress)
+    last_write = 0
+    with progressbar.ProgressBar(max_value=max_players) as progress:
+        if 100 * len(players.raw) / max_players > last_write:
             players.save()
+            last_write = 100 * len(players.raw) / max_players
         # Get at least max_players players
         while not players.full() and len(queue) > 0:
             for i in range(10):
@@ -32,7 +30,11 @@ def get_players(seed_player_id, max_players=10000):
             solo_divisions = api.solo_divisions(buff.keys())
             # Add as needed
             for player_id, data in buff.iteritems():
+
                 division = solo_divisions[player_id]
+
+                progress.update(len(players.raw))
+
                 queue.extend(players.add(player_id, division, data))
             # Refresh buffer
             buff.clear()

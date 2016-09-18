@@ -17,7 +17,9 @@ class PlayerCollection():
         self.raw = {}
         self.division_counts = {'CHALLENGER': [], 'MASTER': [], 'DIAMOND': [], 'PLATINUM': [], 'GOLD': [], 'SILVER': [],
                                 'BRONZE': []}  # init to avoid div by zero errors
-        self.per_div_min = self.size / len(self.division_counts)
+        self.per_div_min = {}
+        for key, value in self.distributions.iteritems():
+            self.per_div_min[key] = self.size * value
 
     def save(self):
         np.save('players.npy', self.raw)
@@ -31,7 +33,7 @@ class PlayerCollection():
     def need(self, player_id, division):
         return division in self.distributions and \
                player_id not in self.raw and \
-               len(self.division_counts[division]) < 1.0 * self.size / len(self.division_counts)
+               self.per_div_min[division] > len(self.division_counts[division])
 
     # Add new player to collection. Return next_ids for convenience.
     def add(self, player_id, division, data):
@@ -50,7 +52,10 @@ class PlayerCollection():
     # Are we done?
     def full(self):
         if len(self.raw) >= self.size:
-            return sum([len(v) > self.per_div_min for _, v in self.division_counts]) == len(self.division_counts)
+            for division in self.distributions:
+                if self.need(0, division):
+                    return False
+            return True
         return False
 
     # Get stats from recent games
