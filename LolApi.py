@@ -17,7 +17,7 @@ class LolApi:
         url = self.base + '/api/lol/NA/v1.3/game/by-summoner/' + str(player_id) + '/recent' + self.api_key
         return self.request(url)
 
-    def solo_division(self, player_ids):
+    def solo_divisions(self, player_ids):
         url = self.base + '/api/lol/' + self.region + '/v2.5/league/by-summoner/' + ','.join(
             [str(p) for p in player_ids]) + self.api_key
         players = self.request(url)
@@ -46,13 +46,13 @@ class LolApi:
         short_delay = self.delay_time(self.short_req, 10, 10, now)
         long_delay = self.delay_time(self.long_req, 600, 500, now)
         time.sleep(max([long_delay, short_delay]))
-        while True:
+        for try_count in range(10):
             try:
                 request = Request(url)
                 response = urlopen(request)
                 break
             except URLError, e:
-                print e
+                print url + ' ' + str(e)
                 time.sleep(10)
         now = datetime.now()
         self.short_req.append(now)

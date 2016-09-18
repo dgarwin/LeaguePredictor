@@ -1,9 +1,8 @@
 import unittest
 from collections import deque
 from datetime import datetime, timedelta
-
-from getgames import PlayerCollection
-from lol_api import LolApi
+from PlayerCollection import PlayerCollection
+from LolApi import LolApi
 
 
 class TestLolApi(unittest.TestCase):
@@ -12,7 +11,7 @@ class TestLolApi(unittest.TestCase):
         self.player_id = 20649224
 
     def test_solo_division(self):
-        val = self.api.solo_division([self.player_id])
+        val = self.api.solo_divisions([self.player_id])
         self.assertEqual(1, len(val))
         self.assertEqual('GOLD', val[self.player_id])
 
@@ -21,13 +20,6 @@ class TestLolApi(unittest.TestCase):
             self.api.recent_games(self.player_id)
         except Exception, e:
             self.fail(e)
-
-
-class TestPlayerCollection(unittest.TestCase):
-    def setUp(self):
-        self.api = LolApi()
-        self.players = PlayerCollection()
-        self.player_id = 20649224
 
     def test_delay_time(self):
         now = datetime.now()
@@ -40,6 +32,13 @@ class TestPlayerCollection(unittest.TestCase):
         self.assertEqual(interval, delay_time)
         delay_time_2 = self.api.delay_time(queue, interval, 2, now)
         self.assertEqual(0, delay_time_2)
+
+
+class TestPlayerCollection(unittest.TestCase):
+    def setUp(self):
+        self.api = LolApi()
+        self.players = PlayerCollection()
+        self.player_id = 20649224
 
     def test_get_player_ids(self):
         recent_games = self.api.recent_games(self.player_id)
