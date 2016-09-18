@@ -37,7 +37,7 @@ class TestLolApi(unittest.TestCase):
 class TestPlayerCollection(unittest.TestCase):
     def setUp(self):
         self.api = LolApi()
-        self.players = PlayerCollection()
+        self.players = PlayerCollection(self.api)
         self.player_id = 20649224
 
     def test_get_player_ids(self):
@@ -47,7 +47,7 @@ class TestPlayerCollection(unittest.TestCase):
 
     def test_get_player_stats(self):
         recent_games = self.api.recent_games(self.player_id)
-        player_stats = self.players.get_player_stats(self.player_id, recent_games)
+        player_stats, valid = self.players.get_player_stats(recent_games)
         self.assertGreater(player_stats['playerRole_3.0'], 0.5)
 
 

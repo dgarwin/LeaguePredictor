@@ -6,9 +6,9 @@ import progressbar
 
 # main logic loop
 def get_players(seed_player_id, max_players=10000):
-    players = PlayerCollection(max_players)
-    queue = deque([seed_player_id])
     api = LolApi()
+    players = PlayerCollection(max_players, api)
+    queue = deque([seed_player_id])
     buff = {}
     last_progress = 0
     with progressbar.ProgressBar(max_value=100) as progress:
@@ -25,7 +25,7 @@ def get_players(seed_player_id, max_players=10000):
                 try:
                     player_id = queue.pop()
                     if player_id not in buff and not players.has(player_id):
-                        buff[player_id] = players.get_player_data(player_id, api)
+                        buff[player_id] = players.get_player_data(player_id)
                 except Exception, e:
                     print 'Bad player: ' + str(player_id) + str(e)
             # Get solo divs from buffer
@@ -36,7 +36,7 @@ def get_players(seed_player_id, max_players=10000):
                 queue.extend(players.add(player_id, division, data))
             # Refresh buffer
             buff.clear()
-        return players
+    return players
 
 
 if __name__ == '__main__':

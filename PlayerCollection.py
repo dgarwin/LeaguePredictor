@@ -11,7 +11,8 @@ class PlayerCollection():
                      'SILVER': 0.3897, 'BRONZE': 0.2759}
 
     # Setup
-    def __init__(self, size=10000):
+    def __init__(self, api, size=10000):
+        self.api = api
         self.size = size
         self.raw = {}
         self.division_counts = {'CHALLENGER': [], 'MASTER': [], 'DIAMOND': [], 'PLATINUM': [], 'GOLD': [], 'SILVER': [],
@@ -66,10 +67,10 @@ class PlayerCollection():
         games = games.mean(axis=0)
         return games, True
 
-    def get_player_data(self, player_id, api):
+    def get_player_data(self, player_id):
         if player_id in self.raw:
             return {}, []
-        recent_games = api.recent_games(player_id)
+        recent_games = self.api.recent_games(player_id)
         player_stats, valid = self.get_player_stats(recent_games)
         if not valid:  # No valid games found
             return {}, []
