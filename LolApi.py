@@ -22,12 +22,16 @@ class LolApi:
             [str(p) for p in player_ids]) + self.api_key
         players = self.request(url)
         ret = {}
-        for player_id, list_ldto in players.iteritems():
+        for player_id in player_ids:
+            if not str(player_id) in players:
+                ret[player_id] = 'UNRANKED'
+                continue
+            list_ldto = players[str(player_id)]
             rank = [ldto['tier'] for ldto in list_ldto if ldto['queue'] == 'RANKED_SOLO_5x5']
             if len(rank) == 0:
-                ret[int(player_id)] = 'UNRAKED'
+                ret[player_id] = 'UNRAKED'
             else:
-                ret[int(player_id)] = rank[0]
+                ret[player_id] = rank[0]
         return ret
 
     @staticmethod

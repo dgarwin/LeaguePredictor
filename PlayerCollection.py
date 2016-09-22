@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+
 # TODO: Ignore items to ignore before processing
 
 
@@ -8,7 +9,7 @@ class PlayerCollection():
     ignore = ['item0', 'item1', 'item2', 'item3', 'item4', 'item5', 'item6', 'team']
     categorical = ['playerPosition', 'playerRole']
     distributions = {'CHALLENGER': 0.0002, 'MASTER': 0.0004, 'DIAMOND': 0.0183, 'PLATINUM': 0.0805, 'GOLD': 0.2351,
-                     'SILVER': 0.3897, 'BRONZE': 0.2759}
+                     'SILVER': 0.3897, 'BRONZE': 0.2759, 'UNRANKED': 0}
 
     # Setup
     def __init__(self, api, size=10000):
@@ -16,10 +17,10 @@ class PlayerCollection():
         self.size = size
         self.raw = {}
         self.division_counts = {'CHALLENGER': [], 'MASTER': [], 'DIAMOND': [], 'PLATINUM': [], 'GOLD': [], 'SILVER': [],
-                                'BRONZE': []}  # init to avoid div by zero errors
+                                'BRONZE': [], 'UNRANKED': []}  # init to avoid div by zero errors
         self.per_div_min = {}
         for key, value in self.distributions.iteritems():
-            self.per_div_min[key] = self.size * value
+            self.per_div_min[key] = round(self.size * value)
 
     def save(self):
         np.save('players.npy', self.raw)
@@ -37,9 +38,9 @@ class PlayerCollection():
 
     # Add new player to collection. Return next_ids for convenience.
     def add(self, player_id, division, data):
-        if not self.need(player_id, division):
-            return []
         player_stats, next_ids = data
+        if not self.need(player_id, division):
+            next_ids = []  # If we don't need this player, don't look at neighboring players
         self.raw[player_id] = player_stats
         self.division_counts[division].append(player_id)
         return next_ids
