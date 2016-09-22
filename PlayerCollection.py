@@ -70,10 +70,10 @@ class PlayerCollection():
         except ValueError:  # Ignore the column for now
             pass
         # games = games.drop(self.ignore, axis=1)
-        games = games.mean(axis=0)
+        games = games.mean(axis=0).to_dict()
         return games, True
 
-    def get_player_data(self, player_id):
+    def get_player_datagaa(self, player_id):
         if player_id in self.raw:
             return {}, []
         recent_games = self.api.recent_games(player_id)

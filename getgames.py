@@ -24,12 +24,9 @@ def get_players(seed_player_id, max_players=10000):
     api = LolApi()
     players = PlayerCollection(api, max_players)
     queue = deque([seed_player_id])
-    last_mod = 0
     buff = {}
     solo_divisions = {}
 
-    if len(players.raw) % WRITE_EVERY > last_mod:
-        players.save()
     # Get at least max_players players
     while not players.full() and len(queue) > 0:
         # Get some players we need based on division
@@ -43,16 +40,16 @@ def get_players(seed_player_id, max_players=10000):
                 print 'Bad player: ' + str(player_id) + str(e)
         # Save player data
         for player_id, data in buff.iteritems():
-
+            if len(players.raw) % WRITE_EVERY == 0:
+                players.save()
             division = solo_divisions[player_id]
 
             queue.extend(players.add(player_id, division, data))
         # Refresh buffer
         buff.clear()
         solo_divisions.clear()
-    print players.raw.keys()
     return players
 
 
 if __name__ == '__main__':
-    get_players(20649224, 10).raw
+    get_players(20649224, 10).save()
