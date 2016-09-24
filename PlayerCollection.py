@@ -9,7 +9,7 @@ class PlayerCollection():
     ignore = ['item0', 'item1', 'item2', 'item3', 'item4', 'item5', 'item6', 'team']
     categorical = ['playerPosition', 'playerRole']
     distributions = {'CHALLENGER': 0.0002, 'MASTER': 0.0004, 'DIAMOND': 0.0183, 'PLATINUM': 0.0805, 'GOLD': 0.2351,
-                     'SILVER': 0.3897, 'BRONZE': 0.2759, 'UNRANKED': 0}
+                     'SILVER': 0.3896, 'BRONZE': 0.2759, 'UNRANKED': 0}
 
     # Setup
     def __init__(self, api, size=10000):
@@ -25,6 +25,12 @@ class PlayerCollection():
     def save(self, suffix):
         np.save('players_' + suffix + '.npy', self.raw)
         np.save('division_counts_' + suffix + '.npy', self.division_counts)
+
+    @staticmethod
+    def load(suffix):
+        players = np.load('players_' + suffix + '.npy')
+        division_counts = np.load('division_counts_' + suffix + '.npy')
+        return players, division_counts
 
     # Did we see this player already?
     def has(self, player_id):
@@ -64,7 +70,6 @@ class PlayerCollection():
         games = pd.DataFrame([v['stats'] for v in recent_games['games'] if v['gameMode'] == 'CLASSIC'])
         if games.empty:
             return games, False
-        games = games.fillna(0)  # Fill before getting
         try:
             games = pd.get_dummies(games, columns=self.categorical)
         except ValueError:  # Ignore the column for now
