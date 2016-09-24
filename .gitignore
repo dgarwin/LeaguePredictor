@@ -90,3 +90,6 @@ ENV/
 
 #Swap files
 *.swp
+
+#.npy
+*.npy

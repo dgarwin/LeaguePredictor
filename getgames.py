@@ -52,4 +52,4 @@ def get_players(seed_player_id, max_players=10000):
 
 
 if __name__ == '__main__':
-    get_players(20649224, 10).save()
+    get_players(20649224, 100).save()
