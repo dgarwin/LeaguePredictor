@@ -1,6 +1,7 @@
 from collections import deque
 from PlayerCollection import PlayerCollection
 from LolApi import LolApi
+from datetime import datetime
 WRITE_EVERY = 100
 BUFF_SIZE = 10
 
@@ -21,6 +22,7 @@ def get_buffered_divisions(queue, players, api):
 
 # main logic loop
 def get_players(seed_player_id, max_players=10000):
+    now = datetime.now()
     api = LolApi()
     players = PlayerCollection(api, max_players)
     queue = deque([seed_player_id])
@@ -41,7 +43,8 @@ def get_players(seed_player_id, max_players=10000):
         # Save player data
         for player_id, data in buff.iteritems():
             if len(players.raw) % WRITE_EVERY == 0:
-                players.save()
+                players.save(str(WRITE_EVERY))
+                print '{0:3.2f} Saving {1} players'.format((datetime.now()-now).total_seconds()/60.0, len(players.raw))
             division = solo_divisions[player_id]
 
             queue.extend(players.add(player_id, division, data))
@@ -52,4 +55,4 @@ def get_players(seed_player_id, max_players=10000):
 
 
 if __name__ == '__main__':
-    get_players(20649224, 100).save()
+    get_players(20649224, 1000).save()

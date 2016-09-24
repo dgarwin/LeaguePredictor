@@ -22,9 +22,9 @@ class PlayerCollection():
         for key, value in self.distributions.iteritems():
             self.per_div_min[key] = round(self.size * value)
 
-    def save(self):
-        np.save('players.npy', self.raw)
-        np.save('division_counts.npy', self.division_counts)
+    def save(self, suffix):
+        np.save('players_' + suffix + '.npy', self.raw)
+        np.save('division_counts_' + suffix + '.npy', self.division_counts)
 
     # Did we see this player already?
     def has(self, player_id):
