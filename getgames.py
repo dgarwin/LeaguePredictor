@@ -2,11 +2,9 @@ from collections import deque
 from PlayerCollection import PlayerCollection
 from LolApi import LolApi
 from datetime import datetime
-from classification import process_data, train_simple_classifier
 
 WRITE_EVERY = 100
 BUFF_SIZE = 10
-
 
 
 def get_buffered_divisions(queue, players, api):
@@ -57,13 +55,3 @@ def get_players(seed_player_id, max_players=10000):
         solo_divisions.clear()
     players.save(suffix)
     return players
-
-
-
-
-
-if __name__ == '__main__':
-    count = 100
-    #get_players(20649224, count)
-    p, d_c = process_data(str(count))
-    train_simple_classifier(p, d_c)
