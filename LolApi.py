@@ -13,6 +13,30 @@ class LolApi:
         self.short_req = deque([datetime(2000, 1, 1)])
         self.long_req = deque([datetime(2000, 1, 1)])
 
+    def solo_divisions_regression(self, player_ids):
+        tier_to_int = {'BRONZE':0, 'SILVER':1, 'GOLD':2, 'PLATINUM':3, 'DIAMOND':4, 'MASTER':5, 'CHALLENGER':6}
+        roman_to_int = {'V':0, 'IV': 0.2, 'III': 0.4, 'II':0.6, 'I': 0.8}
+        url = self.base + '/api/lol/' + self.region + '/v2.5/league/by-summoner/' + ','.join(
+            [str(p) for p in player_ids]) + self.api_key
+        players = self.request(url)
+        ret = {}
+        for player_id in player_ids:
+            if not str(player_id) in players:
+                ret[player_id] = -1
+                continue
+            list_ldto = players[str(player_id)]
+            ldtos = [ldto for ldto in list_ldto if ldto['queue'] == 'RANKED_SOLO_5x5']
+            if len(ldtos) == 0:
+                ret[player_id] = -1
+                continue
+            else:
+                rank = ldtos[0]['tier']
+                division = [entry['division']
+                            for entry in ldtos[0]['entries']
+                            if entry['playerOrTeamId'] == str(player_id)]
+                ret[player_id] = tier_to_int[rank] + roman_to_int[division[0]]
+        return ret
+
     def recent_games(self, player_id):
         url = self.base + '/api/lol/NA/v1.3/game/by-summoner/' + str(player_id) + '/recent' + self.api_key
         return self.request(url)

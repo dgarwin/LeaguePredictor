@@ -15,6 +15,11 @@ class TestLolApi(unittest.TestCase):
         self.assertEqual(1, len(val))
         self.assertEqual('GOLD', val[self.player_id])
 
+    def test_solo_division_regression(self):
+        val = self.api.solo_divisions_regression([self.player_id])
+        self.assertEqual(1, len(val))
+        self.assertEqual(2, val[self.player_id])
+
     def test_get_players_recent_games(self):
         try:
             self.api.recent_games(self.player_id)
