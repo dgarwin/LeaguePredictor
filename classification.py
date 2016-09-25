@@ -12,6 +12,11 @@ from xgboost import XGBClassifier
 from sklearn.metrics import classification_report
 import matplotlib.pyplot as plt
 from PlayerCollection import PlayerCollection
+from keras.models import Sequential
+from keras.layers import Dense, Activation
+from keras.wrappers.scikit_learn import KerasClassifier
+from modeling import get_save_results
+import numpy as np
 
 random_state = 42
 
@@ -23,14 +28,18 @@ def load_classification(suffix):
     division_counts = division_counts.tolist()
     for division, player_ids in division_counts.iteritems():
         for player_id in player_ids:
+            if division == 'MASTER' or division == 'DIAMOND':
+                division = 'PRO'
             player_divisions[player_id] = {'division': division}
     player_divisions = pd.DataFrame(player_divisions).transpose()
     return players, player_divisions
 
 
-def preprocess(players, divisions):
-    players.drop(PlayerCollection.ignore, axis=1)
+def preprocess(players, divisions, description):
+    players.drop(PlayerCollection.ignore, axis=1).as_matrix()
     divisions = [x[0] for x in divisions.as_matrix()]
+    if description == 'NN':
+        divisions = pd.get_dummies(divisions).as_matrix()
     X_train, X_test, y_train, y_test = train_test_split(players, divisions,
                                                         random_state=random_state, stratify=divisions)
     scaler = StandardScaler()
@@ -60,32 +69,45 @@ def tree_error(X_train, X_test, y_train, y_test):
     plt.show()
 
 
-def random_forest(parameters={}):
+def random_forest():
     model = RandomForestClassifier(random_state=random_state, n_estimators=35, max_features=None)
-    grid = GridSearchCV(model, parameters, n_jobs=4)
-    return grid
+    return model
 
 
-def xgboo(parameters={}):
+def xgboo():
     model = XGBClassifier(seed=random_state, nthread=4)
-    # parameters = {'n_estimators':[100, 150, 200]}
+    parameters = {'n_estimators': [100, 150, 200]}
     grid = GridSearchCV(model, parameters)
     return grid
 
 
-def train_classifier(players, divisions, classifier, parameters):
-    X_train, X_test, y_train, y_test = preprocess(players, divisions)
-    if classifier == 'RF':
-        model = random_forest(parameters)
-    elif classifier == 'XGB':
-        model = xgboo(parameters)
+def m():
+    model = Sequential([
+        Dense(256, input_dim=69),
+        Activation('relu'),
+        Dense(128),
+        Activation('relu'),
+        Dense(64),
+        Activation('relu'),
+        Dense(5),
+        Activation('softmax'),
+    ])
+    model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+    return model
+
+
+def nn():
+    return KerasClassifier(build_fn=m, nb_epoch=20, batch_size=128)
+
+
+def train_classifier(players, divisions, description):
+    X_train, X_test, y_train, y_test = preprocess(players, divisions, description)
+    if description == 'RF':
+        model = random_forest()
+    elif description == 'XGB':
+        model = xgboo()
+    elif description == 'NN':
+        model = nn()
     else:
         raise 'Unknown classifier'
-    model.fit(X_train, y_train)
-    print model.score(X_train, y_train)
-    if hasattr(model, 'best_params_'):
-        print model.best_params_
-    print model.score(X_test, y_test)
-    predictions = model.predict(X_test)
-    print classification_report(y_test, predictions)
-    print confusion_matrix(y_test, predictions)
+    get_save_results(X_train, X_test, y_train, y_test, model, description)

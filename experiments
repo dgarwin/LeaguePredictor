@@ -1,0 +1,111 @@
+SVR
+Best params: {'C': 10, 'gamma': 0.001}
+Training Score0.387374156274
+Testing Score: 0.347213583528SVR
+Best params: {'C': 20, 'gamma': 0.001}
+Training Score0.414871009441
+Testing Score: 0.352979674599
+SVR
+Best params: {'C': 30, 'gamma': 0.001}
+Training Score0.430823741119
+Testing Score: 0.35192847112
+SVR
+Best params: {'C': 30, 'gamma': 0.001}
+Training Score0.430823741119
+Testing Score: 0.35192847112
+NN
+Training Score0.53136
+Testing Score: 0.516719999905
+NN
+Training Score0.621760000083
+Testing Score: 0.577920000076
+NN
+Training Score0.623733333371
+Testing Score: 0.580799999981
+             precision    recall  f1-score   support
+
+          0       0.68      0.58      0.63      3440
+          1       0.51      0.58      0.55      2923
+          2       0.55      0.26      0.36      1043
+          3       0.67      0.13      0.22       231
+          4       0.57      0.67      0.61      4863
+
+avg / total       0.59      0.58      0.57     12500
+
+[[2008  221    9    0 1202]
+ [ 173 1708  128    5  909]
+ [  28  439  276   10  290]
+ [   6  130   35   30   30]
+ [ 730  839   56    0 3238]]
+NN
+Training Score0.820026666686
+Testing Score: 0.745119999924
+             precision    recall  f1-score   support
+
+          0       0.90      0.67      0.77      3440
+          1       0.76      0.65      0.70      2923
+          2       0.64      0.65      0.65      1043
+          3       0.72      0.52      0.61       231
+          4       0.69      0.88      0.78      4863
+
+avg / total       0.76      0.75      0.74     12500
+
+[[2312  100   24    0 1004]
+ [  52 1896  224   25  726]
+ [   9  184  682   17  151]
+ [   0   37   56  121   17]
+ [ 197  275   84    4 4303]]
+NN
+Training Score0.995093333359
+Testing Score: 0.987519999905
+             precision    recall  f1-score   support
+
+          0       0.99      0.99      0.99      3440
+          1       0.99      0.98      0.99      2923
+          2       0.99      0.98      0.99      1043
+          3       1.00      1.00      1.00       231
+          4       0.99      0.99      0.99      4863
+
+avg / total       0.99      0.99      0.99     12500
+
+[[3408    5    0    0   27]
+ [   8 2875    6    1   33]
+ [   5   13 1022    0    3]
+ [   0    0    0  230    1]
+ [  29   21    4    0 4809]]
+RF
+Training Score0.996933333333
+Testing Score: 0.4128
+             precision    recall  f1-score   support
+
+     BRONZE       0.47      0.45      0.46       689
+       GOLD       0.36      0.31      0.33       588
+   PLATINUM       0.23      0.05      0.08       202
+        PRO       0.00      0.00      0.00        47
+     SILVER       0.41      0.55      0.47       974
+
+avg / total       0.39      0.41      0.39      2500
+
+[[310  51   2   0 326]
+ [ 80 180  15   1 312]
+ [  7  79  10   1 105]
+ [  1  21   4   0  21]
+ [258 171  13   0 532]]
+NN
+Training Score0.992693333359
+Testing Score: 0.983519999809
+             precision    recall  f1-score   support
+
+          0       0.98      0.99      0.98      3440
+          1       0.99      0.98      0.99      2923
+          2       1.00      0.95      0.98      1043
+          3       0.98      0.99      0.98       231
+          4       0.98      0.99      0.98      4863
+
+avg / total       0.98      0.98      0.98     12500
+
+[[3404    9    0    0   27]
+ [  17 2861    0    0   45]
+ [  16   12  995    3   17]
+ [   0    0    0  228    3]
+ [  51    2    3    1 4806]]
