@@ -1,0 +1,27 @@
+1) SVM
+	All one class-didn't pursue much further
+2) Random forest
+	Gini/Entropy doesn't do much
+	Class_weight matters a bit
+	OOB error?
+	Overfits
+3) Gradient boosted trees
+	Slightly worse performance than RF
+	Overfits
+4) More data
+	Still doesn't do well
+	xgb now has slightly best performance-does not overfit much on training
+	xgb regularization works a bit
+5) PCA
+	does nothing (use for visualization?)
+6) Preprocessing
+	Normalize
+
+Data to show:
+	Classification summary
+	Performance of RF as estimators increased
+	Comparison of Train/Test accuracy
+	Comparison of best estimators
+Talk about:
+	Grid searched parameters
+
