@@ -14,9 +14,13 @@ import matplotlib.pyplot as plt
 from PlayerCollection import PlayerCollection
 from keras.models import Sequential
 from keras.layers import Dense, Activation
+from keras.layers.core import Dropout, MaxoutDense
 from keras.wrappers.scikit_learn import KerasClassifier
 from modeling import get_save_results
 import numpy as np
+from keras.callbacks import EarlyStopping
+from keras.regularizers import l2, l1
+from keras.layers.noise import GaussianNoise
 
 random_state = 42
 
@@ -38,10 +42,11 @@ def load_classification(suffix):
 def preprocess(players, divisions, description):
     players.drop(PlayerCollection.ignore, axis=1).as_matrix()
     divisions = [x[0] for x in divisions.as_matrix()]
-    if description == 'NN':
-        divisions = pd.get_dummies(divisions).as_matrix()
     X_train, X_test, y_train, y_test = train_test_split(players, divisions,
                                                         random_state=random_state, stratify=divisions)
+    if description == 'NN':
+        y_train = pd.get_dummies(y_train).as_matrix()
+        y_test = pd.get_dummies(y_test).as_matrix()
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
@@ -81,14 +86,14 @@ def xgboo():
     return grid
 
 
-def m():
+def mo():
+    activation = 'relu'
     model = Sequential([
         Dense(256, input_dim=69),
-        Activation('relu'),
-        Dense(128),
-        Activation('relu'),
-        Dense(64),
-        Activation('relu'),
+        Activation(activation),
+        Dropout(0.75),
+        MaxoutDense(96, W_regularizer=l2(0.05)),
+        Dropout(0.75),
         Dense(5),
         Activation('softmax'),
     ])
@@ -96,8 +101,28 @@ def m():
     return model
 
 
-def nn():
-    return KerasClassifier(build_fn=m, nb_epoch=20, batch_size=128)
+def m():
+    activation = 'relu'
+    model = Sequential([
+        Dense(256, input_dim=69),
+        Activation(activation),
+        Dropout(0.5),
+        Dense(128),
+        Activation(activation),
+        Dropout(0.5),
+        Dense(64),
+        Activation(activation),
+        Dropout(0.5),
+        Dense(5),
+        Activation('softmax'),
+    ])
+    model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+    return model
+
+
+def nn(build_fn):
+    return KerasClassifier(build_fn=build_fn, nb_epoch=80, batch_size=128, validation_split=0.2,
+                           callbacks=[EarlyStopping(monitor='val_loss', patience=1, mode='auto')])
 
 
 def train_classifier(players, divisions, description):
@@ -107,7 +132,7 @@ def train_classifier(players, divisions, description):
     elif description == 'XGB':
         model = xgboo()
     elif description == 'NN':
-        model = nn()
+        model = nn(m)
     else:
         raise 'Unknown classifier'
     get_save_results(X_train, X_test, y_train, y_test, model, description)
