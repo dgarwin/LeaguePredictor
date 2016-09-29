@@ -3,7 +3,6 @@ from sklearn.metrics import confusion_matrix
 import pandas as pd
 
 
-
 def get_save_results(X_train, X_test, y_train, y_test, model, description):
     model.fit(X_train, y_train)
     predictions = model.predict(X_test)

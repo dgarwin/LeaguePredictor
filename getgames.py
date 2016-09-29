@@ -2,9 +2,22 @@ from collections import deque
 from PlayerCollection import PlayerCollection
 from LolApi import LolApi
 from datetime import datetime
+import numpy as np
 
 WRITE_EVERY = 100
 BUFF_SIZE = 10
+
+
+def get_champion_masteries(count):
+    api = LolApi()
+    p = PlayerCollection(api, count)
+    suffix = str(count)
+    players, _ = p.load(suffix)
+    ret = {}
+    for player_id in players.tolist().keys():
+        tc = api.top_champions(str(count))
+        ret[player_id] = tc
+    np.save('top_champions_' + suffix + '.npy', tc)
 
 
 def get_buffered_divisions(queue, players, api):

@@ -16,12 +16,21 @@
 	does nothing (use for visualization?)
 6) Preprocessing
 	Normalize
+7) NN
+	Simple MLP
+	Add Dropout improves performance
+	High batch size improves performance?-stops guessing plat/diamond at all
+	Only works with ReLU
+	Weight init change does not help
+	Marginal improvement going from 5->3 class classification
 
 Data to show:
 	Classification summary
 	Performance of RF as estimators increased
 	Comparison of Train/Test accuracy
 	Comparison of best estimators
+	How models perform as more data is used
+	How models perform as they get bigger
 Talk about:
 	Grid searched parameters
 
