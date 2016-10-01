@@ -22,5 +22,4 @@ def other(count):
 
 
 if __name__ == '__main__':
-    count = 10000
-    other(count)
+    classify(10000)

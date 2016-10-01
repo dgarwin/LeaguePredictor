@@ -8,16 +8,26 @@ WRITE_EVERY = 100
 BUFF_SIZE = 10
 
 
+def load_masteries(suffix):
+    return np.load('top_champions_' + suffix + '.npy')
+
+
 def get_champion_masteries(count):
+    now = datetime.now()
     api = LolApi()
     p = PlayerCollection(api, count)
     suffix = str(count)
-    players, _ = p.load(suffix)
-    ret = {}
-    for player_id in players.tolist().keys():
+    ret = load_masteries(suffix).tolist()
+    p.load(suffix)
+    for player_id in p.raw.tolist().keys():
+        if player_id in ret:
+            continue
+        if len(ret) % WRITE_EVERY == 0:
+            np.save('top_champions_' + suffix + '.npy', ret)
+            print '{0:3.2f} Saving {1} players'.format((datetime.now()-now).total_seconds()/60.0, len(ret))
         tc = api.top_champions(str(count))
         ret[player_id] = tc
-    np.save('top_champions_' + suffix + '.npy', tc)
+    np.save('top_champions_' + suffix + '.npy', ret)
 
 
 def get_buffered_divisions(queue, players, api):

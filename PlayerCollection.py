@@ -26,10 +26,11 @@ class PlayerCollection():
         np.save('players_' + suffix + '.npy', self.raw)
         np.save('division_counts_' + suffix + '.npy', self.division_counts)
 
-    @staticmethod
-    def load(suffix):
+    def load(self, suffix):
         players = np.load('players_' + suffix + '.npy')
         division_counts = np.load('division_counts_' + suffix + '.npy')
+        self.raw = players
+        self.division_counts = division_counts
         return players, division_counts
 
     # Did we see this player already?

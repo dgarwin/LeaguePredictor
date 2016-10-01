@@ -12,7 +12,8 @@ from modeling import get_save_results
 
 def get_regression_divisions(suffix):
     api = LolApi()
-    players, _ = PlayerCollection.load(suffix)
+    player_collection = PlayerCollection(api)
+    players, _ = player_collection.load(suffix)
     player_ids = players.tolist().keys()
     divisions = {}
     bar = ProgressBar()

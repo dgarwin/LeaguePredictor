@@ -21,13 +21,20 @@ import numpy as np
 from keras.callbacks import EarlyStopping
 from keras.regularizers import l2, l1
 from keras.layers.noise import GaussianNoise
-
+from LolApi import LolApi
+from getgames import load_masteries
+from sklearn.feature_selection import SelectKBest
 random_state = 42
 
 
 def load_classification(suffix):
-    players, division_counts = PlayerCollection.load(suffix)
-    players = pd.DataFrame(players.tolist()).transpose().fillna(0)
+    # Load
+    player_collection = PlayerCollection(LolApi())
+    players, division_counts = player_collection.load(suffix)
+    players = players.tolist()
+    masteries = load_masteries(suffix).tolist()
+
+    # Transform divisions
     player_divisions = {}
     division_counts = division_counts.tolist()
     for division, player_ids in division_counts.iteritems():
@@ -35,7 +42,21 @@ def load_classification(suffix):
             if division == 'MASTER' or division == 'DIAMOND':
                 division = 'PRO'
             player_divisions[player_id] = {'division': division}
+
+    # Get champion masteries
+    if False:
+        for player_id in players.keys():
+            if player_id not in masteries:
+                del players[player_id]
+                del player_divisions[player_id]
+                continue
+            mastery_list = masteries[player_id]
+            for i in range(min(3, len(mastery_list))):
+                players[player_id]['champion_' + str(i)] = mastery_list[i]['championPoints']
+
+    # Create data frames
     player_divisions = pd.DataFrame(player_divisions).transpose()
+    players = pd.DataFrame(players).transpose().fillna(0)
     return players, player_divisions
 
 
@@ -44,6 +65,9 @@ def preprocess(players, divisions, description):
     divisions = [x[0] for x in divisions.as_matrix()]
     X_train, X_test, y_train, y_test = train_test_split(players, divisions,
                                                         random_state=random_state, stratify=divisions)
+    pca = PCA(60)
+    X_train = pca.fit_transform(X_train)
+    X_test = pca.transform(X_test)
     if description == 'NN':
         y_train = pd.get_dummies(y_train).as_matrix()
         y_test = pd.get_dummies(y_test).as_matrix()
@@ -104,7 +128,7 @@ def mo():
 def m():
     activation = 'relu'
     model = Sequential([
-        Dense(256, input_dim=69),
+        Dense(256, input_dim=60),
         Activation(activation),
         Dropout(0.5),
         Dense(128),
