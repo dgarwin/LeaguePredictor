@@ -22,64 +22,10 @@ from keras.callbacks import EarlyStopping
 from keras.regularizers import l2, l1
 from keras.layers.noise import GaussianNoise
 from LolApi import LolApi
+from keras.layers import Input
 from sklearn.feature_selection import SelectKBest
+
 random_state = 42
-
-
-def get_divisions(division_counts):
-    player_divisions = {}
-    for division, player_ids in division_counts.iteritems():
-        for player_id in player_ids:
-            if division == 'MASTER' or division == 'DIAMOND':
-                division = 'PRO'
-            player_divisions[player_id] = {'division': division}
-    return player_divisions
-
-
-def get_players_with_top_champs(player_collection, player_divisions):
-    players = player_collection.raw.copy()
-    for player_id in players.keys():
-        if player_id not in player_collection.top_champions:
-            del players[player_id]
-            del player_divisions[player_id]
-            continue
-        mastery_list = player_collection.top_champions[player_id]
-        for i in range(min(3, len(mastery_list))):
-            players[player_id]['champion_' + str(i)] = mastery_list[i]['championPoints']
-    return players
-
-
-def load_classification(player_collection, use_top_champions=False):
-    # Transform/Get divisions of players
-    player_divisions = get_divisions(player_collection.division_counts)
-    # Get champion masteries
-    if use_top_champions:
-        players = get_players_with_top_champs(player_collection, player_divisions)
-    else:
-        players = player_collection.raw
-
-    # Create data frames
-    player_divisions = pd.DataFrame(player_divisions).transpose()
-    players = pd.DataFrame(players).transpose().fillna(0)
-    return players, player_divisions
-
-
-def preprocess(players, divisions, description):
-    players.drop(PlayerCollection.ignore, axis=1).as_matrix()
-    divisions = [x[0] for x in divisions.as_matrix()]
-    X_train, X_test, y_train, y_test = train_test_split(players, divisions,
-                                                        random_state=random_state, stratify=divisions)
-    pca = PCA(60)
-    X_train = pca.fit_transform(X_train)
-    X_test = pca.transform(X_test)
-    if description == 'NN':
-        y_train = pd.get_dummies(y_train).as_matrix()
-        y_test = pd.get_dummies(y_test).as_matrix()
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
-
-    return X_train, X_test, y_train, y_test
 
 
 def tree_error(X_train, X_test, y_train, y_test):
@@ -114,53 +60,23 @@ def xgboo():
     return grid
 
 
-def mo():
-    activation = 'relu'
+def m(activation='relu', dropout=0.5, layers=3, layer_size=512, layer=Dense):
     model = Sequential([
-        Dense(256, input_dim=69),
-        Activation(activation),
-        Dropout(0.75),
-        MaxoutDense(96, W_regularizer=l2(0.05)),
-        Dropout(0.75),
-        Dense(5),
-        Activation('softmax'),
+        Activation('linear', input_shape=(54,)),
     ])
+
+    for i in range(layers):
+        model.add(layer(layer_size, activation=activation))
+        model.add(Dropout(dropout))
+        layer_size /= 2
+    model.add(Dense(5, activation='softmax'))
+
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
     return model
 
 
-def m():
-    activation = 'relu'
-    model = Sequential([
-        Dense(256, input_dim=60),
-        Activation(activation),
-        Dropout(0.5),
-        Dense(128),
-        Activation(activation),
-        Dropout(0.5),
-        Dense(64),
-        Activation(activation),
-        Dropout(0.5),
-        Dense(5),
-        Activation('softmax'),
-    ])
-    model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
-    return model
-
-
-def nn(build_fn):
-    return KerasClassifier(build_fn=build_fn, nb_epoch=80, batch_size=128, validation_split=0.2,
-                           callbacks=[EarlyStopping(monitor='val_loss', patience=1, mode='auto')])
-
-
-def train_classifier(players, divisions, description):
-    X_train, X_test, y_train, y_test = preprocess(players, divisions, description)
-    if description == 'RF':
-        model = random_forest()
-    elif description == 'XGB':
-        model = xgboo()
-    elif description == 'NN':
-        model = nn(m)
-    else:
-        raise 'Unknown classifier'
-    get_save_results(X_train, X_test, y_train, y_test, model, description)
+def nn(build_fn, net_params={}, batch_size=256):
+    sk_params = {'nb_epoch': 80, 'batch_size': batch_size, 'validation_split': 0.2,
+                 'callbacks': [EarlyStopping(monitor='val_loss', patience=1, mode='auto')]}
+    sk_params.update(net_params)
+    return KerasClassifier(build_fn=build_fn, **sk_params)

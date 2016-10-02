@@ -3,25 +3,25 @@ import numpy as np
 from datetime import datetime
 from collections import deque
 from LolApi import LolApi
-
-WRITE_EVERY = 100
-BUFF_SIZE = 10
-
+from sklearn.cross_validation import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 # TODO: Ignore items to ignore before processing
 
 
 class PlayerCollection():
-    ignore = ['item0', 'item1', 'item2', 'item3', 'item4', 'item5', 'item6', 'team']
+    ignore = ['item0', 'item1', 'item2', 'item3', 'item4', 'item5', 'item6', 'team', 'championId']
+    # Ignore champId for now
     categorical = ['playerPosition', 'playerRole']
     distributions = {'CHALLENGER': 0.0002, 'MASTER': 0.0004, 'DIAMOND': 0.0183, 'PLATINUM': 0.0805, 'GOLD': 0.2351,
                      'SILVER': 0.3896, 'BRONZE': 0.2759, 'UNRANKED': 0}
     players_prefix = 'players_'
-    division_counts_prefix = 'division_counts_'
     matches_prefix = 'matches_'
     player_matches_prefix = 'player_matches_'
     player_top_champions_prefix = 'top_champions_'
     directory = 'npy'
+    WRITE_EVERY = 100
+    BUFF_SIZE = 10
 
     # Setup
     def __init__(self, api=None, size=10000, load=True):
@@ -34,8 +34,6 @@ class PlayerCollection():
         self.player_matches = {}
         self.top_champions = {}
         self.suffix = str(size)
-        self.division_counts = {'CHALLENGER': [], 'MASTER': [], 'DIAMOND': [], 'PLATINUM': [], 'GOLD': [], 'SILVER': [],
-                                'BRONZE': [], 'UNRANKED': []}  # init to avoid div by zero errors
         self.per_div_min = {}
         for key, value in self.distributions.iteritems():
             self.per_div_min[key] = round(self.size * value)
@@ -48,7 +46,6 @@ class PlayerCollection():
 
     def get_collection_tuples(self):
         return [(self.raw, self.players_prefix),
-                (self.division_counts, self.division_counts_prefix),
                 (self.player_matches, self.player_matches_prefix),
                 (self.matches, self.matches_prefix),
                 (self.top_champions, self.player_top_champions_prefix)]
@@ -69,13 +66,9 @@ class PlayerCollection():
             except IOError:
                 print 'Could not find: {0}'.format(filename)
 
-    @staticmethod
-    def get_player_ids(recent_games):
-        return [player['summonerId'] for game in recent_games['games'] for player in game.get('fellowPlayers', [])]
-
     def save_add(self, collection, elements, start_time):
         collection.update(elements)
-        if len(collection) % WRITE_EVERY == 0:
+        if len(collection) % self.WRITE_EVERY == 0:
             self.save()
             print '{0:3.2f} Saving {1} players' \
                 .format((datetime.now() - start_time).total_seconds() / 60.0, len(collection))
@@ -107,100 +100,98 @@ class PlayerCollection():
                           {player_id: [match['match_id'] for match in matches]}, now)
 
     # INITIAL FETCH
-    def full(self):
+    def full(self, division_counts):
         # Did we see this player already?
         # Are we done?
         if len(self.raw) >= self.size:
             for division in self.distributions:
-                if self.need(0, division):
+                if division_counts[division] < self.per_div_min[division]:
                     return False
             return True
         return False
 
-    def has(self, player_id):
-        return player_id in self.raw
-
     # Do we need this player?
-    def need(self, player_id, division):
+    def need(self, player_id, division, division_counts):
         return division in self.distributions and \
                player_id not in self.raw and \
-               self.per_div_min[division] > len(self.division_counts[division])
-
-    # Add new player to collection. Return next_ids for convenience.
-    def add(self, player_id, division, data):
-        player_stats, next_ids = data
-        if not self.need(player_id, division):
-            next_ids = []  # If we don't need this player, don't look at neighboring players
-        self.raw[player_id] = player_stats
-        self.division_counts[division].append(player_id)
-        return next_ids
+               self.per_div_min[division] > division_counts[division]
 
     # Get stats from recent games
-    def get_player_stats(self, recent_games):
-        games = pd.DataFrame([v['stats'] for v in recent_games['games'] if v['gameMode'] == 'CLASSIC'])
-        if games.empty:
-            return games, False
-        try:
-            games = pd.get_dummies(games, columns=self.categorical)
-        except ValueError:  # Ignore the column for now
-            pass
-        # games = games.drop(self.ignore, axis=1)
-        games = games.mean(axis=0).to_dict()
-        return games, True
-
-    def get_player_data(self, player_id):
-        if player_id in self.raw:
-            return {}, []
-        recent_games = self.api.recent_games(player_id)
-        player_stats, valid = self.get_player_stats(recent_games)
-        if not valid:  # No valid games found
-            return {}, []
-        next_ids = self.get_player_ids(recent_games)
-        return player_stats, next_ids
-
-    def get_buffered_divisions(self, queue):
-        player_set = {}
-        while len(player_set) < BUFF_SIZE and len(queue) > 0:
-            player_id = queue.pop()
-            if player_id not in player_set and not self.has(player_id):
-                player_set[player_id] = {}
-        # Get solo divs from buffer
-        solo_divisions = self.api.solo_divisions(player_set.keys())
-        for player_id in player_set:
-            if not self.need(player_id, solo_divisions[player_id]):
-                del solo_divisions[player_id]
-        return solo_divisions
+    @staticmethod
+    def get_player_stats(recent_games):
+        ret = []
+        for game in recent_games['games']:
+            if game['subType'] == 'RANKED_SOLO_5x5':
+                to_add = game['stats']
+                to_add['ipEarned'] = game['ipEarned']
+                to_add['championId'] = game['championId']
+                ret.append(to_add)
+        return ret, len(ret) >= 5
 
     # main logic loop
     def get_players(self, seed_player_id):
-        if len(self.raw) > 0:
-            raise "Fetching players from api after load is forbidden"
+        if len(self.raw) > 0:  # TODO: restart
+            raise Exception('Fetching players from api after load is forbidden')
         now = datetime.now()
         queue = deque([seed_player_id])
-        buff = {}
-        solo_divisions = {}
-
+        division_counts = dict.fromkeys(self.distributions.keys(), 0)
+        print self.per_div_min
         # Get at least max_players players
-        while not self.full() and len(queue) > 0:
-            # Get some players we need based on division
-            while len(solo_divisions) == 0:
-                solo_divisions = self.get_buffered_divisions(queue)
-            # Get player data
-            for player_id in solo_divisions.keys():
+        while not self.full(division_counts) and len(queue) > 0:
+            # Fill buffer with not seen players
+            buff = set()
+            while len(buff) < self.BUFF_SIZE and len(queue) > 0:
+                player_id = queue.pop()
+                if player_id not in self.raw:
+                    buff.add(player_id)
+            # Get player's divisions
+            solo_divisions = self.api.solo_divisions(buff)
+            # Get stats for needed players
+            for player_id in buff:
+                division = solo_divisions[player_id]
+                if not self.need(player_id, division, division_counts):
+                    continue
                 try:
-                    buff[player_id] = self.get_player_data(player_id)
+                    recent_games = self.api.recent_games(player_id)
+                    player_stats, valid = self.get_player_stats(recent_games)
+                    if not valid:
+                        continue
+                    self.save_add(self.raw, {player_id: (player_stats, division)}, now)
+                    division_counts[division] += 1
+                    next_ids = [player['summonerId'] for game in recent_games['games'] for player in
+                                game.get('fellowPlayers', [])]
+                    queue.extend(next_ids)
                 except Exception, e:
                     print 'Bad player: ' + str(player_id) + str(e)
-            # Save player data
-            for player_id, data in buff.iteritems():
-                if len(self.raw) % WRITE_EVERY == 0:
-                    self.save(self.suffix)
-                    print '{0:3.2f} Saving {1} players'.format((datetime.now() - now).total_seconds() / 60.0,
-                                                               len(players.raw))
-                division = solo_divisions[player_id]
+                    continue
+        self.save()
 
-                queue.extend(self.add(player_id, division, data))
-            # Refresh buffer
-            buff.clear()
-            solo_divisions.clear()
-        self.save(self.suffix)
+    @staticmethod
+    def transform_game(data, player_id, division):
+        game = data.copy()
+        game['playerId'] = player_id
+        game['division'] = division
+        return game
+
+    def get_classification_data(self):
+        feature_vectors = [self.transform_game(game, player_id, self.raw[player_id][1])
+                           for player_id in self.raw
+                           for game in self.raw[player_id][0]]
+        df = pd.DataFrame(feature_vectors)
+        df = df.fillna(0)
+        df = df.drop(PlayerCollection.ignore, axis=1)
+        df = pd.get_dummies(df, columns=PlayerCollection.categorical)
+
+        grouped = df.groupby(['playerId', 'division'])
+        players = grouped.mean()
+        divisions = pd.DataFrame(players.index.tolist())[1].as_matrix()
+        players = players.as_matrix()
+
+        X_train, X_test, y_train, y_test = train_test_split(
+            players, divisions, random_state=42, stratify=divisions)
+        y_train = pd.get_dummies(y_train).as_matrix()
+        y_test = pd.get_dummies(y_test).as_matrix()
+        scaler = StandardScaler()
+        X_train = scaler.fit_transform(X_train)
+        X_test = scaler.transform(X_test)
+        return X_train, X_test, y_train, y_test
