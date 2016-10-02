@@ -21,6 +21,7 @@ class PlayerCollection():
     matches_prefix = 'matches_'
     player_matches_prefix = 'player_matches_'
     player_top_champions_prefix = 'top_champions_'
+    directory = 'npy'
 
     # Setup
     def __init__(self, api=None, size=10000, load=True):
@@ -43,7 +44,7 @@ class PlayerCollection():
 
     # Save/load helpers
     def suffix_to_filename(self, prefix):
-        return prefix + self.suffix + '.npy'
+        return self.directory + '/' + prefix + self.suffix + '.npy'
 
     def get_collection_tuples(self):
         return [(self.raw, self.players_prefix),
@@ -97,11 +98,9 @@ class PlayerCollection():
         for i, player_id in enumerate(self.raw.keys()):
             if player_id in self.player_matches:
                 continue
-            print i
             recent_matches = [m['gameId'] for m in self.api.recent_games(player_id)['games']]
             matches = {}
             for match_id in recent_matches:
-                print i
                 matches[match_id] = self.api.get_match(match_id)
             self.save_add(self.matches, matches, now)
             self.save_add(self.player_matches,

@@ -17,6 +17,6 @@ def get_save_results(X_train, X_test, y_train, y_test, model, description):
     write += str(classification_report(y_test, predictions)) + '\n'
     write += str(confusion_matrix(y_test, predictions)) + '\n'
     print write
-    with open('experiments', 'a') as f:
+    with open('notes/experiments', 'a') as f:
         f.write(write)
     return model
