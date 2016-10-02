@@ -24,7 +24,7 @@ from keras.layers.noise import GaussianNoise
 from LolApi import LolApi
 from keras.layers import Input
 from sklearn.feature_selection import SelectKBest
-
+from keras.layers.normalization import BatchNormalization
 random_state = 42
 
 
@@ -60,13 +60,13 @@ def xgboo():
     return grid
 
 
-def m(activation='relu', dropout=0.5, layers=3, layer_size=512, layer=Dense):
+def m(activation='relu', dropout=0.5, layers=3, layer_size=512, layer=Dense, cols=54):
     model = Sequential([
-        Activation('linear', input_shape=(54,)),
+        Activation('linear', input_shape=(cols,)),
     ])
-
     for i in range(layers):
-        model.add(layer(layer_size, activation=activation))
+        model.add(layer(layer_size))
+        model.add(Activation(activation))
         model.add(Dropout(dropout))
         layer_size /= 2
     model.add(Dense(5, activation='softmax'))

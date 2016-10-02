@@ -3,13 +3,15 @@ from sklearn.metrics import confusion_matrix
 import pandas as pd
 
 
-def get_save_results(X_train, X_test, y_train, y_test, model, description):
+def get_save_results(X_train, X_test, y_train, y_test, model, description, params=None):
     model.fit(X_train, y_train)
     predictions = model.predict(X_test)
     write = description + '\n'
     if hasattr(model, 'best_params_'):
         write += 'Best params: ' + str(model.best_params_) + '\n'
-    write += 'Training Score' + str(model.score(X_train, y_train)) + '\n'
+    if params:
+        write += 'Params: ' + str(params) + '\n'
+    write += 'Training Score: ' + str(model.score(X_train, y_train)) + '\n'
     write += 'Testing Score: ' + str(model.score(X_test, y_test)) + '\n'
     if description == 'NN':
         y_test = pd.DataFrame(y_test).stack()

@@ -183,7 +183,7 @@ class PlayerCollection():
         df = pd.get_dummies(df, columns=PlayerCollection.categorical)
 
         grouped = df.groupby(['playerId', 'division'])
-        players = grouped.mean()
+        players = grouped.aggregate([np.mean, np.std])
         divisions = pd.DataFrame(players.index.tolist())[1].as_matrix()
         players = players.as_matrix()
 
