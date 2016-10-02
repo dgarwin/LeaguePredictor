@@ -14,7 +14,7 @@ def get_regression_divisions(suffix):
     api = LolApi()
     player_collection = PlayerCollection(api)
     players, _ = player_collection.load(suffix)
-    player_ids = players.tolist().keys()
+    player_ids = players.keys()
     divisions = {}
     bar = ProgressBar()
     for i in bar(range(0, len(player_ids), 10)):

@@ -22,37 +22,41 @@ from keras.callbacks import EarlyStopping
 from keras.regularizers import l2, l1
 from keras.layers.noise import GaussianNoise
 from LolApi import LolApi
-from getgames import load_masteries
 from sklearn.feature_selection import SelectKBest
 random_state = 42
 
 
-def load_classification(suffix):
-    # Load
-    player_collection = PlayerCollection(LolApi())
-    players, division_counts = player_collection.load(suffix)
-    players = players.tolist()
-    masteries = load_masteries(suffix).tolist()
-
-    # Transform divisions
+def get_divisions(division_counts):
     player_divisions = {}
-    division_counts = division_counts.tolist()
     for division, player_ids in division_counts.iteritems():
         for player_id in player_ids:
             if division == 'MASTER' or division == 'DIAMOND':
                 division = 'PRO'
             player_divisions[player_id] = {'division': division}
+    return player_divisions
 
+
+def get_players_with_top_champs(player_collection, player_divisions):
+    players = player_collection.raw.copy()
+    for player_id in players.keys():
+        if player_id not in player_collection.top_champions:
+            del players[player_id]
+            del player_divisions[player_id]
+            continue
+        mastery_list = player_collection.top_champions[player_id]
+        for i in range(min(3, len(mastery_list))):
+            players[player_id]['champion_' + str(i)] = mastery_list[i]['championPoints']
+    return players
+
+
+def load_classification(player_collection, use_top_champions=False):
+    # Transform/Get divisions of players
+    player_divisions = get_divisions(player_collection.division_counts)
     # Get champion masteries
-    if False:
-        for player_id in players.keys():
-            if player_id not in masteries:
-                del players[player_id]
-                del player_divisions[player_id]
-                continue
-            mastery_list = masteries[player_id]
-            for i in range(min(3, len(mastery_list))):
-                players[player_id]['champion_' + str(i)] = mastery_list[i]['championPoints']
+    if use_top_champions:
+        players = get_players_with_top_champs(player_collection, player_divisions)
+    else:
+        players = player_collection.raw
 
     # Create data frames
     player_divisions = pd.DataFrame(player_divisions).transpose()
