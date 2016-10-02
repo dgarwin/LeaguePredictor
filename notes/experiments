@@ -2958,3 +2958,23 @@ avg / total       0.55      0.56      0.55      3726
  [ 31   2 407  61 381]
  [  3   7 182  70  40]
  [252   1 264  23 921]]
+XGB
+Best params: {'n_estimators': 200}
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 108, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.681700223714
+Testing Score: 0.527106816962
+             precision    recall  f1-score   support
+
+     BRONZE       0.71      0.62      0.66      1012
+    DIAMOND       1.00      0.03      0.06        69
+       GOLD       0.40      0.35      0.37       882
+   PLATINUM       0.33      0.09      0.14       302
+     SILVER       0.50      0.68      0.58      1461
+
+avg / total       0.53      0.53      0.51      3726
+
+[[629   0  27   0 356]
+ [  0   2  42  18   7]
+ [ 20   0 312  27 523]
+ [  3   0 176  27  96]
+ [232   0 226   9 994]]

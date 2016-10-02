@@ -173,7 +173,7 @@ class PlayerCollection():
         game['division'] = division
         return game
 
-    def get_classification_data(self):
+    def get_classification_data(self, division_dummies=True):
         feature_vectors = [self.transform_game(game, player_id, self.raw[player_id][1])
                            for player_id in self.raw
                            for game in self.raw[player_id][0]]
@@ -189,8 +189,9 @@ class PlayerCollection():
 
         X_train, X_test, y_train, y_test = train_test_split(
             players, divisions, random_state=42, stratify=divisions)
-        y_train = pd.get_dummies(y_train).as_matrix()
-        y_test = pd.get_dummies(y_test).as_matrix()
+        if division_dummies:
+            y_train = pd.get_dummies(y_train).as_matrix()
+            y_test = pd.get_dummies(y_test).as_matrix()
         scaler = StandardScaler()
         X_train = scaler.fit_transform(X_train)
         X_test = scaler.transform(X_test)
