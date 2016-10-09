@@ -55,7 +55,8 @@ def random_forest():
 
 def xgboo():
     model = XGBClassifier(seed=random_state, nthread=4)
-    parameters = {'n_estimators': [100, 150, 200]}
+    parameters = {'n_estimators': [100, 200, 400, 800],
+                  'reg_alpha': [0, 0.1, 1, 10]}
     grid = GridSearchCV(model, parameters)
     return grid
 
@@ -80,3 +81,22 @@ def nn(build_fn, net_params={}, batch_size=256):
                  'callbacks': [EarlyStopping(monitor='val_loss', patience=1, mode='auto')]}
     sk_params.update(net_params)
     return KerasClassifier(build_fn=build_fn, **sk_params)
+
+
+def load_data(count):
+    pc = PlayerCollection(size=count)
+    # Get raw Data
+    X_train, X_test, y_train, y_test = pc.get_classification_data(division_dummies=False)
+    print X_train.shape, X_test.shape
+    params = {'cols': X_train.shape[1],
+              'batch_size': 256,
+              'layers': 3,
+              'dropout': 0.5,
+              'layer_size': 512,
+              'layer': Dense}
+    # model = nn(m, net_params=params)
+    model = xgboo()
+    get_save_results(X_train, X_test, y_train, y_test, model, 'XGB', params)
+
+if __name__ == '__main__':
+    load_data(15000)

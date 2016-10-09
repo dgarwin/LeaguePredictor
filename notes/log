@@ -34,3 +34,5 @@ Data to show:
 Talk about:
 	Grid searched parameters
 
+
+TODO: Use 1x1 convolutions on all input data (10 games)

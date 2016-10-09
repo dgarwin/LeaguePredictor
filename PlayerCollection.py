@@ -5,12 +5,14 @@ from collections import deque
 from LolApi import LolApi
 from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import StandardScaler
+from collections import Counter
+
 
 # TODO: Ignore items to ignore before processing
 
 
 class PlayerCollection():
-    ignore = ['item0', 'item1', 'item2', 'item3', 'item4', 'item5', 'item6', 'team', 'championId']
+    ignore = ['item0', 'item1', 'item2', 'item3', 'item4', 'item5', 'item6', 'championId', 'ipEarned']
     # Ignore champId for now
     categorical = ['playerPosition', 'playerRole']
     distributions = {'CHALLENGER': 0.0002, 'MASTER': 0.0004, 'DIAMOND': 0.0183, 'PLATINUM': 0.0805, 'GOLD': 0.2351,
@@ -126,15 +128,29 @@ class PlayerCollection():
                 to_add['ipEarned'] = game['ipEarned']
                 to_add['championId'] = game['championId']
                 ret.append(to_add)
-        return ret, len(ret) >= 5
+        return ret
+
+    def seed_queue(self):
+        games = self.api.featured_games()
+        summoner_names = [p['summonerName'] for game in games['gameList'] for p in game['participants']
+                          if game['gameMode'] == 'CLASSIC' and game['gameType'] == 'MATCHED_GAME']
+        ret = []
+        for i in range(0, len(summoner_names), 10):
+            id_map = self.api.summoner_ids(summoner_names[i:i + 10])
+            ret.extend([p['id'] for p in id_map.values()])
+        return ret
 
     # main logic loop
-    def get_players(self, seed_player_id):
-        if len(self.raw) > 0:  # TODO: restart
-            raise Exception('Fetching players from api after load is forbidden')
+    def get_players(self):
         now = datetime.now()
-        queue = deque([seed_player_id])
+        queue = deque(self.seed_queue())
+        seen = set(self.raw.keys())
         division_counts = dict.fromkeys(self.distributions.keys(), 0)
+        if len(self.raw) > 0:
+            counts = Counter([x[1] for x in self.raw.values()])
+            for k, v in counts.iteritems():
+                division_counts[k] = v
+        print division_counts
         print self.per_div_min
         # Get at least max_players players
         while not self.full(division_counts) and len(queue) > 0:
@@ -142,10 +158,15 @@ class PlayerCollection():
             buff = set()
             while len(buff) < self.BUFF_SIZE and len(queue) > 0:
                 player_id = queue.pop()
-                if player_id not in self.raw:
+                if player_id not in seen:
                     buff.add(player_id)
+                    seen.add(player_id)
             # Get player's divisions
-            solo_divisions = self.api.solo_divisions(buff)
+            try:
+                solo_divisions = self.api.solo_divisions(buff)
+            except Exception, e:
+                print 'Could not get solo divisions.', e, buff
+                continue
             # Get stats for needed players
             for player_id in buff:
                 division = solo_divisions[player_id]
@@ -153,14 +174,14 @@ class PlayerCollection():
                     continue
                 try:
                     recent_games = self.api.recent_games(player_id)
-                    player_stats, valid = self.get_player_stats(recent_games)
-                    if not valid:
-                        continue
-                    self.save_add(self.raw, {player_id: (player_stats, division)}, now)
-                    division_counts[division] += 1
-                    next_ids = [player['summonerId'] for game in recent_games['games'] for player in
-                                game.get('fellowPlayers', [])]
-                    queue.extend(next_ids)
+                    player_stats = self.get_player_stats(recent_games)
+                    if len(player_stats) >= 6:
+                        self.save_add(self.raw, {player_id: (player_stats, division)}, now)
+                        division_counts[division] += 1
+                    if len(player_stats) > 0:
+                        next_ids = [player['summonerId'] for game in recent_games['games'] for player in
+                                    game.get('fellowPlayers', [])]
+                        queue.extend(next_ids)
                 except Exception, e:
                     print 'Bad player: ' + str(player_id) + str(e)
                     continue
@@ -173,7 +194,7 @@ class PlayerCollection():
         game['division'] = division
         return game
 
-    def get_classification_data(self, division_dummies=True):
+    def get_classification_data(self, division_dummies=True, samples=None):
         feature_vectors = [self.transform_game(game, player_id, self.raw[player_id][1])
                            for player_id in self.raw
                            for game in self.raw[player_id][0]]
@@ -186,6 +207,9 @@ class PlayerCollection():
         players = grouped.aggregate([np.mean, np.std])
         divisions = pd.DataFrame(players.index.tolist())[1].as_matrix()
         players = players.as_matrix()
+        if samples is not None:
+            players = players[0:samples, :]
+            divisions = divisions[0:samples, :]
 
         X_train, X_test, y_train, y_test = train_test_split(
             players, divisions, random_state=42, stratify=divisions)

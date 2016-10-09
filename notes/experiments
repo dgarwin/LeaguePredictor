@@ -2978,3 +2978,143 @@ avg / total       0.53      0.53      0.51      3726
  [ 20   0 312  27 523]
  [  3   0 176  27  96]
  [232   0 226   9 994]]
+XGB
+Best params: {'n_estimators': 200, 'reg_alpha': 0.01}
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 108, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.683579418345
+Testing Score: 0.52281266774
+             precision    recall  f1-score   support
+
+     BRONZE       0.71      0.62      0.66      1012
+    DIAMOND       0.50      0.01      0.03        69
+       GOLD       0.40      0.35      0.37       882
+   PLATINUM       0.31      0.09      0.14       302
+     SILVER       0.50      0.68      0.57      1461
+
+avg / total       0.52      0.52      0.50      3726
+
+[[623   0  28   1 360]
+ [  0   1  40  20   8]
+ [ 19   0 307  29 527]
+ [  1   0 172  27 102]
+ [233   1 227  10 990]]
+XGB
+Best params: {'n_estimators': 20, 'reg_alpha': 1}
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 108, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.516868008949
+Testing Score: 0.488727858293
+             precision    recall  f1-score   support
+
+     BRONZE       0.68      0.52      0.59      1012
+    DIAMOND       0.00      0.00      0.00        69
+       GOLD       0.37      0.17      0.24       882
+   PLATINUM       0.22      0.01      0.01       302
+     SILVER       0.45      0.78      0.57      1461
+
+avg / total       0.47      0.49      0.44      3726
+
+[[ 528    0   11    0  473]
+ [   0    0   44    1   24]
+ [  27    0  152    4  699]
+ [   2    0  105    2  193]
+ [ 221    0   99    2 1139]]
+XGB
+Best params: {'n_estimators': 400, 'reg_alpha': 1}
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 108, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.777181208054
+Testing Score: 0.530327428878
+             precision    recall  f1-score   support
+
+     BRONZE       0.71      0.63      0.67      1012
+    DIAMOND       0.50      0.03      0.05        69
+       GOLD       0.40      0.35      0.38       882
+   PLATINUM       0.39      0.14      0.20       302
+     SILVER       0.50      0.67      0.58      1461
+
+avg / total       0.53      0.53      0.51      3726
+
+[[641   0  26   1 344]
+ [  0   2  38  21   8]
+ [ 17   0 310  32 523]
+ [  1   2 163  42  94]
+ [238   0 230  12 981]]
+XGB
+Best params: {'n_estimators': 400, 'reg_alpha': 0}
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 108, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.781387024609
+Testing Score: 0.533011272142
+             precision    recall  f1-score   support
+
+     BRONZE       0.72      0.64      0.67      1012
+    DIAMOND       0.25      0.01      0.03        69
+       GOLD       0.41      0.37      0.39       882
+   PLATINUM       0.34      0.12      0.18       302
+     SILVER       0.51      0.67      0.58      1461
+
+avg / total       0.52      0.53      0.52      3726
+
+[[645   0  23   3 341]
+ [  0   1  38  22   8]
+ [ 22   0 324  33 503]
+ [  2   2 168  36  94]
+ [231   1 238  11 980]]
+XGB
+Best params: {'n_estimators': 800, 'reg_alpha': 0}
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 108, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.890022371365
+Testing Score: 0.535426731079
+             precision    recall  f1-score   support
+
+     BRONZE       0.71      0.65      0.68      1012
+    DIAMOND       0.25      0.01      0.03        69
+       GOLD       0.41      0.38      0.39       882
+   PLATINUM       0.38      0.17      0.24       302
+     SILVER       0.51      0.65      0.57      1461
+
+avg / total       0.53      0.54      0.52      3726
+
+[[654   0  30   3 325]
+ [  1   1  34  25   8]
+ [ 19   0 332  42 489]
+ [  2   2 157  52  89]
+ [239   1 250  15 956]]
+XGB
+Best params: {'n_estimators': 800, 'reg_alpha': 10}
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 108, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.795167785235
+Testing Score: 0.535158346753
+             precision    recall  f1-score   support
+
+     BRONZE       0.70      0.64      0.67      1012
+    DIAMOND       0.67      0.03      0.06        69
+       GOLD       0.42      0.38      0.39       882
+   PLATINUM       0.40      0.18      0.24       302
+     SILVER       0.51      0.66      0.58      1461
+
+avg / total       0.53      0.54      0.52      3726
+
+[[650   0  34   1 327]
+ [  1   2  33  28   5]
+ [ 23   0 331  38 490]
+ [  2   1 162  53  84]
+ [253   0 237  13 958]]
+XGB
+Best params: {'n_estimators': 400, 'reg_alpha': 0.1}
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 108, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.781387024609
+Testing Score: 0.534084809447
+             precision    recall  f1-score   support
+
+     BRONZE       0.71      0.63      0.67      1012
+    DIAMOND       0.40      0.03      0.05        69
+       GOLD       0.41      0.37      0.39       882
+   PLATINUM       0.40      0.15      0.22       302
+     SILVER       0.51      0.67      0.58      1461
+
+avg / total       0.53      0.53      0.52      3726
+
+[[635   0  24   3 350]
+ [  1   2  40  20   6]
+ [ 18   1 324  34 505]
+ [  3   1 167  45  86]
+ [234   1 231  11 984]]
