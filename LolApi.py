@@ -5,6 +5,7 @@ from collections import deque
 import time
 from datetime import timedelta
 
+
 class LolApi:
     def __init__(self, api_key='RGAPI-B110C515-1426-43EA-ABD8-F04D6169C9C1'):
         self.base = 'https://na.api.pvp.net'
@@ -50,6 +51,15 @@ class LolApi:
         url = self.base + '/api/lol/' + self.region + '/v2.2/match/' + str(match_id) + self.api_key
         return self.request(url, 5)
 
+    def featured_games(self):
+        url = self.base + '/observer-mode/rest/featured' + self.api_key
+        return self.request(url)
+
+    def summoner_ids(self, names):
+        names = [name.replace(' ', '') for name in names]
+        url = self.base + '/api/lol/'+self.region+'/v1.4/summoner/by-name/' + ','.join(names) + self.api_key
+        return self.request(url)
+
     def solo_divisions(self, player_ids):
         url = self.base + '/api/lol/' + self.region + '/v2.5/league/by-summoner/' + ','.join(
             [str(p) for p in player_ids]) + self.api_key
@@ -79,20 +89,22 @@ class LolApi:
         return 0
 
     def request(self, url, min_wait=0):
-        # make a request within the rate limit. This could be done in a more async way, yolo
-        now = datetime.now()
-        short_delay = self.delay_time(self.short_req, 10, 10, now)
-        long_delay = self.delay_time(self.long_req, 500, 500, now)
-        wait_time = max([long_delay, short_delay, min_wait])
-        time.sleep(wait_time)
         for try_count in range(10):
+            now = datetime.now()
+            short_delay = self.delay_time(self.short_req, 10, 10, now)
+            long_delay = self.delay_time(self.long_req, 500, 500, now)
+            wait_time = max([long_delay, short_delay, min_wait])
+            time.sleep(wait_time)
             try:
-                request = Request(url)
-                response = urlopen(request)
-                break
+                return self.request_data(url)
             except URLError, e:
                 print e.reason, datetime.now()
                 time.sleep(10)
+        raise Exception("Invalid URL.")
+
+    def request_data(self, url):
+        request = Request(url)
+        response = urlopen(request)
         now = datetime.now()
         self.short_req.append(now)
         self.long_req.append(now)
