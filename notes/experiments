@@ -3270,3 +3270,288 @@ avg / total       0.55      0.55      0.55      3726
  [ 25  12 393 108 344]
  [  1  26 142 100  33]
  [243   1 302  47 868]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 81, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.59498881395
+Testing Score: 0.55421363466
+             precision    recall  f1-score   support
+
+          0       0.69      0.65      0.67      1012
+          1       0.00      0.00      0.00        69
+          2       0.46      0.42      0.44       882
+          3       0.40      0.25      0.31       302
+          4       0.54      0.66      0.59      1461
+
+avg / total       0.54      0.55      0.54      3726
+
+[[655   0  17   1 339]
+ [  0   0  26  40   3]
+ [ 32   0 372  51 427]
+ [  2   0 174  76  50]
+ [254   0 223  22 962]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 11, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.501834451838
+Testing Score: 0.482286635292
+             precision    recall  f1-score   support
+
+          0       0.66      0.46      0.54      1012
+          1       0.00      0.00      0.00        69
+          2       0.39      0.32      0.35       882
+          3       0.33      0.04      0.07       302
+          4       0.46      0.71      0.56      1461
+
+avg / total       0.48      0.48      0.45      3726
+
+[[ 469    0   42    0  501]
+ [   0    0   42    7   20]
+ [  31    0  281   14  556]
+ [   2    0  149   12  139]
+ [ 210    0  213    3 1035]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 108, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.588814317865
+Testing Score: 0.532206119899
+             precision    recall  f1-score   support
+
+          0       0.66      0.71      0.68      1012
+          1       0.20      0.03      0.05        69
+          2       0.43      0.46      0.44       882
+          3       0.35      0.41      0.38       302
+          4       0.55      0.50      0.53      1461
+
+avg / total       0.53      0.53      0.53      3726
+
+[[719   0  27   2 264]
+ [  0   2  14  52   1]
+ [ 39   5 404 125 309]
+ [  2   3 147 123  27]
+ [335   0 344  47 735]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 108, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.624340044375
+Testing Score: 0.559581319331
+             precision    recall  f1-score   support
+
+          0       0.71      0.66      0.69      1012
+          1       0.26      0.09      0.13        69
+          2       0.46      0.40      0.43       882
+          3       0.38      0.24      0.29       302
+          4       0.54      0.67      0.60      1461
+
+avg / total       0.55      0.56      0.55      3726
+
+[[672   0  15   0 325]
+ [  0   6  27  32   4]
+ [ 23   7 356  56 440]
+ [  0  10 163  71  58]
+ [246   0 208  27 980]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 108, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.613780760488
+Testing Score: 0.557434245744
+             precision    recall  f1-score   support
+
+          0       0.67      0.71      0.69      1012
+          1       0.50      0.01      0.03        69
+          2       0.48      0.36      0.41       882
+          3       0.38      0.39      0.38       302
+          4       0.55      0.63      0.59      1461
+
+avg / total       0.55      0.56      0.55      3726
+
+[[719   0  13   1 279]
+ [  0   1  14  52   2]
+ [ 31   0 315 105 431]
+ [  4   1 128 119  50]
+ [314   0 184  40 923]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 54, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.583892617311
+Testing Score: 0.555287171453
+             precision    recall  f1-score   support
+
+          0       0.71      0.66      0.68      1012
+          1       1.00      0.01      0.03        69
+          2       0.44      0.41      0.43       882
+          3       0.40      0.25      0.30       302
+          4       0.54      0.66      0.60      1461
+
+avg / total       0.56      0.56      0.54      3726
+
+[[665   0  18   1 328]
+ [  0   1  27  38   3]
+ [ 22   0 360  55 445]
+ [  0   0 178  74  50]
+ [245   0 228  19 969]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 54, 'batch_size': 256, 'layer_size': 768}
+Training Score: 0.599731543459
+Testing Score: 0.54991948451
+             precision    recall  f1-score   support
+
+          0       0.68      0.68      0.68      1012
+          1       0.44      0.06      0.10        69
+          2       0.44      0.42      0.43       882
+          3       0.42      0.16      0.23       302
+          4       0.53      0.64      0.58      1461
+
+avg / total       0.54      0.55      0.54      3726
+
+[[692   0  15   1 304]
+ [  0   4  35  28   2]
+ [ 29   1 369  31 452]
+ [  2   4 190  49  57]
+ [293   0 225   8 935]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 54, 'batch_size': 256, 'layer_size': 1024}
+Training Score: 0.593557046943
+Testing Score: 0.542136338214
+             precision    recall  f1-score   support
+
+          0       0.68      0.68      0.68      1012
+          1       0.50      0.01      0.03        69
+          2       0.45      0.41      0.43       882
+          3       0.35      0.36      0.36       302
+          4       0.54      0.59      0.56      1461
+
+avg / total       0.54      0.54      0.54      3726
+
+[[687   0  18   2 305]
+ [  0   1  15  50   3]
+ [ 31   1 364 115 371]
+ [  0   0 146 110  46]
+ [297   0 268  38 858]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 54, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.598926174817
+Testing Score: 0.555018785783
+             precision    recall  f1-score   support
+
+          0       0.74      0.64      0.68      1012
+          1       1.00      0.04      0.08        69
+          2       0.44      0.47      0.45       882
+          3       0.40      0.20      0.26       302
+          4       0.54      0.65      0.59      1461
+
+avg / total       0.57      0.56      0.55      3726
+
+[[646   0  19   1 346]
+ [  0   3  30  31   5]
+ [ 12   0 411  41 418]
+ [  0   0 196  59  47]
+ [218   0 279  15 949]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 43, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.564742729242
+Testing Score: 0.532206119994
+             precision    recall  f1-score   support
+
+          0       0.68      0.64      0.66      1012
+          1       0.43      0.04      0.08        69
+          2       0.43      0.38      0.40       882
+          3       0.33      0.22      0.26       302
+          4       0.52      0.64      0.57      1461
+
+avg / total       0.53      0.53      0.52      3726
+
+[[648   0  23   1 340]
+ [  0   3  23  39   4]
+ [ 27   3 338  63 451]
+ [  1   1 175  65  60]
+ [272   0 231  29 929]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 11, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.496286353289
+Testing Score: 0.480139560266
+             precision    recall  f1-score   support
+
+          0       0.62      0.54      0.58      1012
+          1       0.00      0.00      0.00        69
+          2       0.37      0.40      0.39       882
+          3       0.23      0.03      0.05       302
+          4       0.47      0.60      0.53      1461
+
+avg / total       0.46      0.48      0.46      3726
+
+[[550   0  56   0 406]
+ [  0   0  48   9  12]
+ [ 52   0 356  15 459]
+ [  3   0 184   8 107]
+ [277   0 306   3 875]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 27, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.556510067178
+Testing Score: 0.529522276731
+             precision    recall  f1-score   support
+
+          0       0.74      0.55      0.63      1012
+          1       0.21      0.14      0.17        69
+          2       0.42      0.42      0.42       882
+          3       0.36      0.11      0.16       302
+          4       0.52      0.69      0.59      1461
+
+avg / total       0.53      0.53      0.52      3726
+
+[[ 556    0   22    1  433]
+ [   0   10   36   21    2]
+ [  15   15  372   24  456]
+ [   0   20  197   32   53]
+ [ 182    2  264   10 1003]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 54, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.574496644258
+Testing Score: 0.555287171965
+             precision    recall  f1-score   support
+
+          0       0.70      0.66      0.68      1012
+          1       0.00      0.00      0.00        69
+          2       0.45      0.48      0.46       882
+          3       0.44      0.15      0.22       302
+          4       0.54      0.64      0.59      1461
+
+avg / total       0.54      0.56      0.54      3726
+
+[[666   0  25   0 321]
+ [  0   0  41  26   2]
+ [ 27   0 424  23 408]
+ [  0   0 202  45  55]
+ [262   0 257   8 934]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 81, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.588366890242
+Testing Score: 0.554750402385
+             precision    recall  f1-score   support
+
+          0       0.69      0.68      0.69      1012
+          1       0.00      0.00      0.00        69
+          2       0.48      0.34      0.40       882
+          3       0.38      0.34      0.36       302
+          4       0.54      0.67      0.59      1461
+
+avg / total       0.54      0.55      0.54      3726
+
+[[692   0  10   2 308]
+ [  0   0  19  47   3]
+ [ 34   0 300  83 465]
+ [  0   0 133 103  66]
+ [282   0 169  38 972]]
+NN
+Params: {'layers': 3, 'layer': <class 'keras.layers.core.Dense'>, 'dropout': 0.5, 'cols': 97, 'batch_size': 256, 'layer_size': 512}
+Training Score: 0.606085010919
+Testing Score: 0.55314009633
+             precision    recall  f1-score   support
+
+          0       0.68      0.70      0.69      1012
+          1       0.31      0.23      0.26        69
+          2       0.46      0.47      0.46       882
+          3       0.41      0.24      0.30       302
+          4       0.55      0.58      0.57      1461
+
+avg / total       0.55      0.55      0.55      3726
+
+[[706   0  22   0 284]
+ [  0  16  23  29   1]
+ [ 28  16 413  47 378]
+ [  2  18 173  72  37]
+ [305   2 274  26 854]]

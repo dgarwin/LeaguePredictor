@@ -9,7 +9,8 @@ from xgboost import XGBClassifier
 from PlayerCollection import PlayerCollection
 from classification import nn, m
 from keras.layers import Dense
-from modeling import training_data_sequence
+from modeling import training_data_sequence, feature_count_sequence
+from sklearn.feature_selection import SelectPercentile, f_classif
 
 
 def sequence():
@@ -31,7 +32,7 @@ def load_data(count):
     pc = PlayerCollection(size=count)
     # Get raw Data
     X_train, X_test, y_train, y_test = pc.get_classification_data(division_dummies=True)
-    print X_train.shape, X_test.shape
+    print 'Train: ' + str(X_train.shape) + ' ' + str(y_train.shape)
     params = {'cols': X_train.shape[1],
               'batch_size': 256,
               'layers': 3,
@@ -43,4 +44,4 @@ def load_data(count):
 
 
 if __name__ == '__main__':
-    load_data(15000)
+    feature_count_sequence(15000)

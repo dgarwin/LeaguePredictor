@@ -6,6 +6,7 @@ from LolApi import LolApi
 from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import StandardScaler
 from collections import Counter
+from sklearn.feature_selection import SelectPercentile, f_classif
 
 
 # TODO: Ignore items to ignore before processing
@@ -221,10 +222,16 @@ class PlayerCollection():
             divisions = divisions[0:samples]
         return players, divisions
 
-    def get_classification_data(self, division_dummies=True, samples=None):
+    def get_classification_data(self, division_dummies=True, samples=None, percentile=100):
         players, divisions = self.get_undivided_classification_data(samples)
         X_train, X_test, y_train, y_test = train_test_split(
             players, divisions, random_state=42, stratify=divisions)
+
+        selector = SelectPercentile(f_classif, percentile=percentile)
+        selector.fit(X_train, y_train)
+        X_train = selector.transform(X_train)
+        X_test = selector.transform(X_test)
+
         if division_dummies:
             y_train = pd.get_dummies(y_train).as_matrix()
             y_test = pd.get_dummies(y_test).as_matrix()

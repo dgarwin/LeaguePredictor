@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from pylab import pie, title as pylab_title, show, figure, axes
 
 
 def fetch_data(size):
@@ -18,8 +19,14 @@ def graph_model_depth():
     pass
 
 
-def graph_model_width():
-    pass
+def class_distributions():
+    labels = ['Diamond', 'Platinum', 'Gold', 'Silver', 'Bronze']
+    fracs = [1.89, 8.05, 23.51, 38.96, 27.59]
+    figure(1, figsize=(6,6))
+    ax = axes([0.1, 0.1, 0.8, 0.8])
+    pie(fracs, labels=labels, autopct='%1.1f%%')
+    pylab_title('Tier Population Distribution', bbox={'facecolor': '0.8', 'pad': 5})
+    show()
 
 
 def sns_triangle(matrix, title):
@@ -56,5 +63,6 @@ def many_pairwise_correlations(size,print_top=10):
 
 
 if __name__ == '__main__':
-    many_pairwise_correlations(15000)
+    #many_pairwise_correlations(15000)
+    class_distributions()
 
