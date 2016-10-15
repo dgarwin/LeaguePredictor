@@ -15,7 +15,7 @@ class PlayerCollection():
     ignore = ['item0', 'item1', 'item2', 'item3', 'item4', 'item5', 'item6', 'championId', 'ipEarned']
     # Ignore champId for now
     categorical = ['playerPosition', 'playerRole']
-    distributions = {'CHALLENGER': 0.0002, 'MASTER': 0.0004, 'DIAMOND': 0.0183, 'PLATINUM': 0.0805, 'GOLD': 0.2351,
+    distributions = {'CHALLENGER': 0, 'MASTER': 0, 'DIAMOND': 0.0189, 'PLATINUM': 0.0805, 'GOLD': 0.2351,
                      'SILVER': 0.3896, 'BRONZE': 0.2759, 'UNRANKED': 0}
     players_prefix = 'players_'
     matches_prefix = 'matches_'
@@ -194,7 +194,11 @@ class PlayerCollection():
         game['division'] = division
         return game
 
-    def get_classification_data(self, division_dummies=True, samples=None):
+    def get_raw_transform(self):
+        for id in self.raw.keys():
+            d = self.raw[id][1]
+            if d == 'MASTER' or d == 'CHALLENGER':
+                del self.raw[id]
         feature_vectors = [self.transform_game(game, player_id, self.raw[player_id][1])
                            for player_id in self.raw
                            for game in self.raw[player_id][0]]
@@ -205,12 +209,20 @@ class PlayerCollection():
 
         grouped = df.groupby(['playerId', 'division'])
         players = grouped.aggregate([np.mean, np.std])
-        divisions = pd.DataFrame(players.index.tolist())[1].as_matrix()
+        divisions = pd.DataFrame(players.index.tolist())[1]
+        return players, divisions
+
+    def get_undivided_classification_data(self, samples=None):
+        players, divisions = self.get_raw_transform()
+        divisions = divisions.as_matrix()
         players = players.as_matrix()
         if samples is not None:
             players = players[0:samples, :]
-            divisions = divisions[0:samples, :]
+            divisions = divisions[0:samples]
+        return players, divisions
 
+    def get_classification_data(self, division_dummies=True, samples=None):
+        players, divisions = self.get_undivided_classification_data(samples)
         X_train, X_test, y_train, y_test = train_test_split(
             players, divisions, random_state=42, stratify=divisions)
         if division_dummies:

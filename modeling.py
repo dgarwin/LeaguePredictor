@@ -5,6 +5,8 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 from PlayerCollection import PlayerCollection
+from classification import nn, m
+from keras.layers import Dense
 
 
 def get_save_results(X_train, X_test, y_train, y_test, model, description, params=None):
@@ -68,5 +70,25 @@ def xgb_estimators_progression(count):
     player_collection = PlayerCollection(size=count)
     sequence_graph(XGBClassifier, xgb_params, [10, 20, 40, 80, 100, 160, 320, 460, 640],
                    'n_estimators', 'Number of Trees', 'XGBoost', False, player_collection)
-if __name__ == '__main__':
-    xgb_estimators_progression(15000)
+
+
+def training_data_sequence(models, pc, sample_counts):
+    for model, name, division_dummies in models:
+        test_accuracys = []
+        train_accuracys = []
+        for sample_count in sample_counts:
+            X_train, X_test, y_train, y_test = \
+                pc.get_classification_data(division_dummies=division_dummies, samples=sample_count)
+            model.fit(X_train, y_train)
+            train_accuracys.append(model.score(X_train, y_train))
+            test_accuracys.append(model.score(X_test, y_test))
+        plt.scatter(sample_counts, test_accuracys)
+        plt.scatter(sample_counts, train_accuracys)
+        plt.plot(sample_counts, test_accuracys, label='{} Test'.format(name))
+        plt.plot(sample_counts, train_accuracys, label='{} Train'.format(name))
+    plt.legend(loc='best')
+    plt.title('Models as Sample Count Grows')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Sample Count')
+    plt.show()
+

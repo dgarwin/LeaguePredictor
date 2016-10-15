@@ -11,12 +11,10 @@ from sklearn.mixture import GMM
 from xgboost import XGBClassifier
 from sklearn.metrics import classification_report
 import matplotlib.pyplot as plt
-from PlayerCollection import PlayerCollection
 from keras.models import Sequential
 from keras.layers import Dense, Activation
 from keras.layers.core import Dropout, MaxoutDense
 from keras.wrappers.scikit_learn import KerasClassifier
-from modeling import get_save_results
 import numpy as np
 from keras.callbacks import EarlyStopping
 from keras.regularizers import l2, l1
@@ -25,6 +23,7 @@ from LolApi import LolApi
 from keras.layers import Input
 from sklearn.feature_selection import SelectKBest
 from keras.layers.normalization import BatchNormalization
+from sklearn.manifold import TSNE
 random_state = 42
 
 
@@ -82,21 +81,3 @@ def nn(build_fn, net_params={}, batch_size=256):
     sk_params.update(net_params)
     return KerasClassifier(build_fn=build_fn, **sk_params)
 
-
-def load_data(count):
-    pc = PlayerCollection(size=count)
-    # Get raw Data
-    X_train, X_test, y_train, y_test = pc.get_classification_data(division_dummies=False)
-    print X_train.shape, X_test.shape
-    params = {'cols': X_train.shape[1],
-              'batch_size': 256,
-              'layers': 3,
-              'dropout': 0.5,
-              'layer_size': 512,
-              'layer': Dense}
-    # model = nn(m, net_params=params)
-    model = xgboo()
-    get_save_results(X_train, X_test, y_train, y_test, model, 'XGB', params)
-
-if __name__ == '__main__':
-    load_data(15000)
