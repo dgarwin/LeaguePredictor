@@ -47,7 +47,7 @@ def random_forest():
     return GridSearchCV(model, parameters, n_jobs=8)
 
 
-def     xgboo():
+def xgboo():
     model = XGBClassifier(seed=random_state, nthread=8)
     parameters = {'max_depth': [3, 6, 9], 'n_estimators': [50, 100, 200, 400]}
     grid = GridSearchCV(model, parameters, n_jobs=4, verbose=2)
@@ -57,7 +57,6 @@ def     xgboo():
 def mlp():
     model = GridSearchNN()
     parameters = {'layers': [2, 3, 4], 'layer_size': [512], 'layer': [Dense, MaxoutDense]}
-    parameters = {}
     grid = GridSearchCV(model, parameters)
     return grid
 
