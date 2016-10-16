@@ -2,14 +2,13 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 import pandas as pd
-from modeling import get_save_results
 from classification import xgboo
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 from PlayerCollection import PlayerCollection
-from classification import nn, m
+from classification import nn, m, svm, random_forest, mlp
 from keras.layers import Dense
-from modeling import training_data_sequence, feature_count_sequence
+from modeling import training_data_sequence, feature_count_sequence, get_save_results
 from sklearn.feature_selection import SelectPercentile, f_classif
 
 
@@ -28,20 +27,38 @@ def sequence():
     training_data_sequence([xgb, rf, mlp], pc, samples)
 
 
-def load_data(count):
+def train_svm(count):
+    pc = PlayerCollection(size=count)
+    # Get raw Data
+    X_train, X_test, y_train, y_test = pc.get_classification_data(division_dummies=False)
+    model = svm()
+    get_save_results(X_train, X_test, y_train, y_test, model, 'SVM')
+
+
+def train_rf(count):
+    pc = PlayerCollection(size=count)
+    # Get raw Data
+    X_train, X_test, y_train, y_test = pc.get_classification_data(division_dummies=False)
+    model = random_forest()
+    get_save_results(X_train, X_test, y_train, y_test, model, 'RF')
+
+
+def train_xgb(count):
+    pc = PlayerCollection(size=count)
+    # Get raw Data
+    X_train, X_test, y_train, y_test = pc.get_classification_data(division_dummies=False)
+    model = xgboo()
+    get_save_results(X_train, X_test, y_train, y_test, model, 'XGBoost')
+
+
+def train_nn(count):
     pc = PlayerCollection(size=count)
     # Get raw Data
     X_train, X_test, y_train, y_test = pc.get_classification_data(division_dummies=True)
-    print 'Train: ' + str(X_train.shape) + ' ' + str(y_train.shape)
-    params = {'cols': X_train.shape[1],
-              'batch_size': 256,
-              'layers': 3,
-              'dropout': 0.5,
-              'layer_size': 512,
-              'layer': Dense}
-    model = nn(m, net_params=params)
-    get_save_results(X_train, X_test, y_train, y_test, model, 'NN', params)
+    model = mlp()
+    get_save_results(X_train, X_test, y_train, y_test, model, 'NN')
 
 
 if __name__ == '__main__':
-    feature_count_sequence(15000)
+    train_nn(15000)
+

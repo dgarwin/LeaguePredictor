@@ -195,11 +195,13 @@ class PlayerCollection():
         game['division'] = division
         return game
 
-    def get_raw_transform(self):
-        for id in self.raw.keys():
-            d = self.raw[id][1]
+    def get_raw_transform(self, only_class=None):
+        for pid in self.raw.keys():
+            d = self.raw[pid][1]
+            if only_class is not None and d != only_class:
+                del self.raw[pid]
             if d == 'MASTER' or d == 'CHALLENGER':
-                del self.raw[id]
+                del self.raw[pid]
         feature_vectors = [self.transform_game(game, player_id, self.raw[player_id][1])
                            for player_id in self.raw
                            for game in self.raw[player_id][0]]

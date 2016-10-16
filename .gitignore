@@ -93,3 +93,6 @@ ENV/
 
 #.npy
 *.npy
+
+#images
+images/*

@@ -1,29 +1,15 @@
-import pandas as pd
 from sklearn.svm import SVC
-from sklearn.cross_validation import train_test_split
-from sklearn.metrics import confusion_matrix
-from sklearn.decomposition import PCA
-from sklearn.grid_search import GridSearchCV
+from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import StandardScaler
-import xgboost as xgb
-from sklearn.mixture import GMM
 from xgboost import XGBClassifier
-from sklearn.metrics import classification_report
 import matplotlib.pyplot as plt
 from keras.models import Sequential
 from keras.layers import Dense, Activation
 from keras.layers.core import Dropout, MaxoutDense
 from keras.wrappers.scikit_learn import KerasClassifier
-import numpy as np
+from sklearn.base import BaseEstimator
+
 from keras.callbacks import EarlyStopping
-from keras.regularizers import l2, l1
-from keras.layers.noise import GaussianNoise
-from LolApi import LolApi
-from keras.layers import Input
-from sklearn.feature_selection import SelectKBest
-from keras.layers.normalization import BatchNormalization
-from sklearn.manifold import TSNE
 random_state = 42
 
 
@@ -47,17 +33,53 @@ def tree_error(X_train, X_test, y_train, y_test):
     plt.show()
 
 
+def svm():
+    model = SVC(random_state=random_state)
+    parameters = {'kernel': ['rbf', 'sigmoid'], 'gamma': ['auto', 0.1, 0.001], 'C': [0.1, 1, 10],
+                  'class_weight': [None, 'balanced']}
+    return GridSearchCV(model, parameters, n_jobs=8)
+
+
 def random_forest():
-    model = RandomForestClassifier(random_state=random_state, n_estimators=35, max_features=None)
-    return model
+    model = RandomForestClassifier(random_state=random_state)
+    parameters = {'n_estimators': [10, 20, 40, 80, 160, 320], 'max_features': ['auto', None],
+                  'max_depth': [None, 2, 4, 8], 'class_weight': [None, 'balanced']}
+    return GridSearchCV(model, parameters, n_jobs=8)
 
 
-def xgboo():
-    model = XGBClassifier(seed=random_state, nthread=4)
-    parameters = {'n_estimators': [100, 200, 400, 800],
-                  'reg_alpha': [0, 0.1, 1, 10]}
+def     xgboo():
+    model = XGBClassifier(seed=random_state, nthread=8)
+    parameters = {'max_depth': [3, 6, 9], 'n_estimators': [50, 100, 200, 400]}
+    grid = GridSearchCV(model, parameters, n_jobs=4, verbose=2)
+    return grid
+
+
+def mlp():
+    model = GridSearchNN()
+    parameters = {'layers': [2, 3, 4], 'layer_size': [512], 'layer': [Dense, MaxoutDense]}
+    parameters = {}
     grid = GridSearchCV(model, parameters)
     return grid
+
+
+class GridSearchNN(BaseEstimator):
+    def __init__(self, activation='relu', dropout='0.5', layers=3, layer_size=512, layer=Dense):
+        self.activation = activation
+        self.dropout = dropout
+        self.layers = layers
+        self.layer_size = layer_size
+        self.layer = layer
+
+    def fit(self, X, y):
+        self.cols = X.shape[1]
+        self.model = nn(m, self.__dict__)
+        self.model.fit(X, y)
+
+    def score(self, X, y):
+        return self.model.score(X, y)
+
+    def predict(self, X):
+        return self.model.predict(X)
 
 
 def m(activation='relu', dropout=0.5, layers=3, layer_size=512, layer=Dense, cols=54):
