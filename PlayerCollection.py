@@ -201,6 +201,8 @@ class PlayerCollection():
         df = pd.DataFrame(feature_vectors)
         df = df.fillna(0)
         df = df.drop(PlayerCollection.ignore, axis=1)
+        print len(df.columns) + 7
+        raise 'test'
         df = pd.get_dummies(df, columns=PlayerCollection.categorical)
 
         grouped = df.groupby(['playerId', 'division'])

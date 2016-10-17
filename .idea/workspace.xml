@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d9d1449f-9576-41d3-aa93-f0fca6ac76fb" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/PlayerCollection.py" afterPath="$PROJECT_DIR$/PlayerCollection.py" />
     </list>
     <ignored path="LeaguePredictor.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -38,8 +39,8 @@
       <file leaf-file-name="PlayerCollection.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PlayerCollection.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-19.741936">
-              <caret line="46" column="48" selection-start-line="46" selection-start-column="48" selection-end-line="46" selection-end-column="48" />
+            <state vertical-scroll-proportion="-12.225806">
+              <caret line="189" column="0" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -93,35 +94,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_model.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="test_model.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="9" column="4" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="36" />
+            <state vertical-scroll-proportion="0.55334985">
+              <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.22966507">
-              <caret line="16" column="103" selection-start-line="16" selection-start-column="103" selection-end-line="16" selection-end-column="103" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="getgames.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/getgames.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="4" column="47" selection-start-line="4" selection-start-column="47" selection-end-line="4" selection-end-column="47" />
-              <folding>
-                <element signature="e#0#29#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -157,15 +136,15 @@
         <option value="$PROJECT_DIR$/modeling.py" />
         <option value="$PROJECT_DIR$/getgames.py" />
         <option value="$PROJECT_DIR$/classification.py" />
+        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/test_model.py" />
         <option value="$PROJECT_DIR$/PlayerCollection.py" />
-        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="65" />
-    <option name="y" value="-1416" />
+    <option name="y" value="24" />
     <option name="width" value="1247" />
     <option name="height" value="1416" />
   </component>
@@ -221,7 +200,7 @@
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager" selected="Python.run">
+  <component name="RunManager" selected="Python.test_model (1)">
     <configuration default="false" name="run" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -438,9 +417,9 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.run" />
-        <item index="1" class="java.lang.String" itemvalue="Python.test_model (1)" />
-        <item index="2" class="java.lang.String" itemvalue="Python.PlayerCollection" />
+        <item index="0" class="java.lang.String" itemvalue="Python.test_model (1)" />
+        <item index="1" class="java.lang.String" itemvalue="Python.PlayerCollection" />
+        <item index="2" class="java.lang.String" itemvalue="Python.run" />
         <item index="3" class="java.lang.String" itemvalue="Python.test_model" />
         <item index="4" class="java.lang.String" itemvalue="Python.modeling" />
       </list>
@@ -492,7 +471,7 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-1416" width="1247" height="1416" extended-state="4" />
+    <frame x="65" y="24" width="1247" height="1416" extended-state="4" />
     <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -502,7 +481,7 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3095429" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3733234" sideWeight="0.49388754" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32786885" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36438152" sideWeight="0.4915798" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36377475" sideWeight="0.4915798" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37214613" sideWeight="0.5084202" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -894,7 +873,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="4" column="47" selection-start-line="4" selection-start-column="47" selection-end-line="4" selection-end-column="47" />
           <folding>
-            <element signature="e#0#29#0" expanded="true" />
+            <element signature="e#0#29#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -919,16 +898,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="4" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="36" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/LICENSE">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -937,21 +906,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.22966507">
+          <caret line="16" column="103" selection-start-line="16" selection-start-column="103" selection-end-line="16" selection-end-column="103" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/PlayerCollection.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-19.741936">
-          <caret line="46" column="48" selection-start-line="46" selection-start-column="48" selection-end-line="46" selection-end-column="48" />
+        <state vertical-scroll-proportion="-12.225806">
+          <caret line="189" column="0" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
+    <entry file="file://$PROJECT_DIR$/test_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.22966507">
-          <caret line="16" column="103" selection-start-line="16" selection-start-column="103" selection-end-line="16" selection-end-column="103" />
-          <folding />
+        <state vertical-scroll-proportion="0.55334985">
+          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
