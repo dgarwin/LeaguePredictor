@@ -3,7 +3,7 @@ import numpy as np
 from datetime import datetime
 from collections import deque
 from LolApi import LolApi
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from collections import Counter
 from sklearn.feature_selection import SelectPercentile, f_classif

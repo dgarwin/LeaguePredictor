@@ -93,31 +93,27 @@ def training_data_sequence(models, pc, sample_counts):
     plt.show()
 
 
-def feature_count_sequence(count):
+def feature_count_sequence(count, model_func, division_dummies=False):
     pc = PlayerCollection(size=count)
     # Get raw Data
     train_score = []
     test_score = []
     features = []
-    percentiles = [10, 25, 50, 75, 90]
+    percentiles = [10, 25, 50, 75, 90, 100]
     for p in percentiles:
-        X_train, X_test, y_train, y_test = pc.get_classification_data(division_dummies=True, percentile=p)
-        print 'Train: ' + str(X_train.shape) + ' ' + str(y_train.shape)
-        params = {'cols': X_train.shape[1],
-                  'batch_size': 256,
-                  'layers': 3,
-                  'dropout': 0.5,
-                  'layer_size': 512,
-                  'layer': Dense}
-        model = nn(m, net_params=params)
+        X_train, X_test, y_train, y_test = pc.get_classification_data(division_dummies=division_dummies, percentile=p)
+        model = model_func(X_train.shape[1])
         model.fit(X_train, y_train)
         test_score.append(model.score(X_test, y_test))
         train_score.append(model.score(X_train, y_train))
         features.append(X_train.shape[1])
-
+    print features
+    print test_score
+    print train_score
     plt.plot(features, train_score, label='Train')
     plt.plot(features, test_score, label='Test ')
+    plt.legend(loc='upper right')
     plt.title('Accuracy as Feature Count Increases')
     plt.ylabel('Accuracy')
     plt.xlabel('Feature count')
-    plt.show()
+    plt.savefig('images/featureSequence.png')

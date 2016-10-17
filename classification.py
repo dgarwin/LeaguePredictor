@@ -5,7 +5,7 @@ from xgboost import XGBClassifier
 import matplotlib.pyplot as plt
 from keras.models import Sequential
 from keras.layers import Dense, Activation
-from keras.layers.core import Dropout, MaxoutDense
+from keras.layers.core import Dropout
 from keras.wrappers.scikit_learn import KerasClassifier
 from sklearn.base import BaseEstimator
 
@@ -35,7 +35,7 @@ def tree_error(X_train, X_test, y_train, y_test):
 
 def svm():
     model = SVC(random_state=random_state)
-    parameters = {'kernel': ['rbf', 'sigmoid'], 'gamma': ['auto', 0.1, 0.001], 'C': [0.1, 1, 10],
+    parameters = {'kernel': ['rbf', 'sigmoid'], 'gamma': [  0.001, 0.0005, 0.0001], 'C': [0.1, 1, 10],
                   'class_weight': [None, 'balanced']}
     return GridSearchCV(model, parameters, n_jobs=8)
 
@@ -56,13 +56,13 @@ def xgboo():
 
 def mlp():
     model = GridSearchNN()
-    parameters = {'layers': [2, 3, 4], 'layer_size': [512], 'layer': [Dense, MaxoutDense]}
+    parameters = {'layers': [1, 2, 3, 4], 'layer_size': [256, 512, 1024], 'layer': [Dense]}
     grid = GridSearchCV(model, parameters)
     return grid
 
 
 class GridSearchNN(BaseEstimator):
-    def __init__(self, activation='relu', dropout='0.5', layers=3, layer_size=512, layer=Dense):
+    def __init__(self, activation='relu', dropout='0.5', layers=1, layer_size=512, layer=Dense):
         self.activation = activation
         self.dropout = dropout
         self.layers = layers
@@ -81,12 +81,13 @@ class GridSearchNN(BaseEstimator):
         return self.model.predict(X)
 
 
-def m(activation='relu', dropout=0.5, layers=3, layer_size=512, layer=Dense, cols=54):
-    model = Sequential([
-        Activation('linear', input_shape=(cols,)),
-    ])
+def m(activation='relu', dropout=0.5, layers=3, layer_size=512, layer=Dense, cols=108):
+    model = Sequential()
     for i in range(layers):
-        model.add(layer(layer_size))
+        if i != 0:
+            model.add(layer(layer_size))
+        else:
+            model.add(layer(layer_size, input_dim=cols))
         model.add(Activation(activation))
         model.add(Dropout(dropout))
         layer_size /= 2
