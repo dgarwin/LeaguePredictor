@@ -12,3 +12,5 @@ To load NN dummy data, run:
 (The difference is only in whether or not the output classes are one-hot encoded or not.)
 
 See test_model.py for how the four classifier experiments were executed.
+
+The data can be obtained (~114 MB) here: https://drive.google.com/file/d/0B-OcR_i9yty1N3Z3LUNqS25YeTQ/view?usp=sharing
