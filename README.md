@@ -14,3 +14,4 @@ To load NN dummy data, run:
 See test_model.py for how the four classifier experiments were executed.
 
 The data can be obtained (~114 MB) here: https://drive.google.com/file/d/0B-OcR_i9yty1N3Z3LUNqS25YeTQ/view?usp=sharing
+Once the data is downloaded, in the primary directory, create a folder called "npy" and place it there."
