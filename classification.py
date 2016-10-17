@@ -2,45 +2,34 @@ from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
-import matplotlib.pyplot as plt
 from keras.models import Sequential
 from keras.layers import Dense, Activation
 from keras.layers.core import Dropout
 from keras.wrappers.scikit_learn import KerasClassifier
 from sklearn.base import BaseEstimator
-
 from keras.callbacks import EarlyStopping
+# Models for training
 random_state = 42
 
 
-def tree_error(X_train, X_test, y_train, y_test):
-    n_estimators = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-    class_weight = ['balanced', None]
-    for cw in class_weight:
-        error_rate = []
-        train_error = []
-        for ne in n_estimators:
-            model = RandomForestClassifier(random_state=random_state, n_estimators=ne, class_weight=cw, n_jobs=4,
-                                           max_features=None)
-            model.fit(X_train, y_train)
-            train_score = model.score(X_train, y_train)
-            score = model.score(X_test, y_test)
-            error_rate.append(score)
-            train_error.append(train_score)
-        plt.plot(n_estimators, error_rate, label=str(cw) + ' test')
-        # plt.plot(n_estimators, train_error, label=str(cw) + ' train')
-    plt.legend(loc='upper right')
-    plt.show()
-
-
 def svm():
+    # SVM to grid search
     model = SVC(random_state=random_state)
-    parameters = {'kernel': ['rbf', 'sigmoid'], 'gamma': [  0.001, 0.0005, 0.0001], 'C': [0.1, 1, 10],
+    parameters = {'kernel': ['rbf', 'sigmoid'], 'gamma': [0.001, 0.0005, 0.0001], 'C': [0.1, 1, 10],
                   'class_weight': [None, 'balanced']}
     return GridSearchCV(model, parameters, n_jobs=8)
 
 
+def svm_2():
+    # SVM to grid search with expanded parameter set
+    model = SVC(random_state=random_state)
+    parameters = {'kernel': ['rbf', 'sigmoid'], 'gamma': ['auto', 0.1, 0.001, 0.0005, 0.0001],
+                  'C': [0.1, 1, 10, 50, 100, 150, 200], 'class_weight': [None, 'balanced']}
+    return GridSearchCV(model, parameters, n_jobs=8)
+
+
 def random_forest():
+    # Random Forest to grid search
     model = RandomForestClassifier(random_state=random_state)
     parameters = {'n_estimators': [10, 20, 40, 80, 160, 320], 'max_features': ['auto', None],
                   'max_depth': [None, 2, 4, 8], 'class_weight': [None, 'balanced']}
@@ -48,6 +37,7 @@ def random_forest():
 
 
 def xgboo():
+    # Gradient Boosted Trees to grid search
     model = XGBClassifier(seed=random_state, nthread=8)
     parameters = {'max_depth': [3, 6, 9], 'n_estimators': [50, 100, 200, 400]}
     grid = GridSearchCV(model, parameters, n_jobs=4, verbose=2)
@@ -55,6 +45,7 @@ def xgboo():
 
 
 def mlp():
+    # MLP to grid search
     model = GridSearchNN()
     parameters = {'layers': [1, 2, 3, 4], 'layer_size': [256, 512, 1024], 'layer': [Dense]}
     grid = GridSearchCV(model, parameters)
@@ -62,6 +53,7 @@ def mlp():
 
 
 class GridSearchNN(BaseEstimator):
+    # Wrapper class for grid search to work
     def __init__(self, activation='relu', dropout='0.5', layers=1, layer_size=512, layer=Dense):
         self.activation = activation
         self.dropout = dropout
@@ -82,6 +74,7 @@ class GridSearchNN(BaseEstimator):
 
 
 def m(activation='relu', dropout=0.5, layers=3, layer_size=512, layer=Dense, cols=108):
+    # Basic MLP generation function
     model = Sequential()
     for i in range(layers):
         if i != 0:
@@ -98,8 +91,8 @@ def m(activation='relu', dropout=0.5, layers=3, layer_size=512, layer=Dense, col
 
 
 def nn(build_fn, net_params={}, batch_size=256):
+    # Wrapper function for sklearn wrapper class
     sk_params = {'nb_epoch': 80, 'batch_size': batch_size, 'validation_split': 0.2,
                  'callbacks': [EarlyStopping(monitor='val_loss', patience=1, mode='auto')]}
     sk_params.update(net_params)
     return KerasClassifier(build_fn=build_fn, **sk_params)
-

@@ -2,8 +2,7 @@ from collections import deque
 from PlayerCollection import PlayerCollection
 from LolApi import LolApi
 from datetime import datetime
-import numpy as np
-
+# File containing loops for API data extraction
 WRITE_EVERY = 100
 BUFF_SIZE = 10
 

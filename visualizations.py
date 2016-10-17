@@ -1,25 +1,11 @@
 from PlayerCollection import PlayerCollection
 import numpy as np
-import pandas as pd
 import seaborn as sns
-import matplotlib.pyplot as plt
-from pylab import pie, title, show, figure, axes, savefig, subplots, xlabel, ylabel
-
-
-def fetch_data(size):
-    pc = PlayerCollection(size=size)
-    pc.get_players()
-
-
-def get_best_model():
-    pass
-
-
-def graph_model_depth():
-    pass
+from pylab import pie, title, figure, axes, savefig, subplots, xlabel, ylabel, plot, legend
 
 
 def class_distributions():
+    # Create the Class Distributions Diagram
     labels = ['Diamond', 'Platinum', 'Gold', 'Silver', 'Bronze']
     fracs = [1.89, 8.05, 23.51, 38.96, 27.59]
     figure(1, figsize=(6,6))
@@ -30,6 +16,7 @@ def class_distributions():
 
 
 def sns_triangle(matrix, plt_title, only_class=None):
+
     sns.set(style="white")
     # Generate a mask for the upper triangle
     mask = np.zeros_like(matrix, dtype=np.bool)
@@ -54,6 +41,7 @@ def sns_triangle(matrix, plt_title, only_class=None):
 
 
 def many_pairwise_correlations(size, print_top=10, only_class=None):
+    # Create the correlation heat map triangle diagram
     pc = PlayerCollection(size=size)
     players, divisions = pc.get_raw_transform(only_class=only_class)
     corr_train = players.corr()
@@ -70,6 +58,31 @@ def many_pairwise_correlations(size, print_top=10, only_class=None):
         tit += only_class
     sns_triangle(corr_train, tit, only_class)
 
+
+def feature_count_sequence(count, model_func, division_dummies=False):
+    # Create feature count sequence diagram
+    pc = PlayerCollection(size=count)
+    train_score = []
+    test_score = []
+    features = []
+    percentiles = [10, 25, 50, 75, 90, 100]
+    for p in percentiles:
+        X_train, X_test, y_train, y_test = pc.get_classification_data(division_dummies=division_dummies, percentile=p)
+        model = model_func(X_train.shape[1])
+        model.fit(X_train, y_train)
+        test_score.append(model.score(X_test, y_test))
+        train_score.append(model.score(X_train, y_train))
+        features.append(X_train.shape[1])
+    print features
+    print test_score
+    print train_score
+    plot(features, train_score, label='Train')
+    plot(features, test_score, label='Test ')
+    legend(loc='upper right')
+    title('Accuracy as Feature Count Increases')
+    ylabel('Accuracy')
+    xlabel('Feature count')
+    savefig('images/featureSequence.png')
 
 if __name__ == '__main__':
     many_pairwise_correlations(15000)

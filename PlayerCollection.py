@@ -9,10 +9,9 @@ from collections import Counter
 from sklearn.feature_selection import SelectPercentile, f_classif
 
 
-# TODO: Ignore items to ignore before processing
-
-
 class PlayerCollection():
+    # Class for collecting, loading, and saving data
+
     ignore = ['item0', 'item1', 'item2', 'item3', 'item4', 'item5', 'item6', 'championId', 'ipEarned']
     # Ignore champId for now
     categorical = ['playerPosition', 'playerRole']
@@ -26,8 +25,7 @@ class PlayerCollection():
     WRITE_EVERY = 100
     BUFF_SIZE = 10
 
-    # Setup
-    def __init__(self, api=None, size=10000, load=True):
+    def __init__(self, api=None, size=15000, load=True):
         if api is None:
             api = LolApi()
         self.api = api
