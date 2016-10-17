@@ -18,9 +18,7 @@ class PlayerCollection():
     distributions = {'CHALLENGER': 0, 'MASTER': 0, 'DIAMOND': 0.0189, 'PLATINUM': 0.0805, 'GOLD': 0.2351,
                      'SILVER': 0.3896, 'BRONZE': 0.2759, 'UNRANKED': 0}
     players_prefix = 'players_'
-    matches_prefix = 'matches_'
-    player_matches_prefix = 'player_matches_'
-    player_top_champions_prefix = 'top_champions_'
+
     directory = 'npy'
     WRITE_EVERY = 100
     BUFF_SIZE = 10
@@ -46,10 +44,7 @@ class PlayerCollection():
         return self.directory + '/' + prefix + self.suffix + '.npy'
 
     def get_collection_tuples(self):
-        return [(self.raw, self.players_prefix),
-                (self.player_matches, self.player_matches_prefix),
-                (self.matches, self.matches_prefix),
-                (self.top_champions, self.player_top_champions_prefix)]
+        return [(self.raw, self.players_prefix)]
 
     def save(self):
         collections = self.get_collection_tuples()
