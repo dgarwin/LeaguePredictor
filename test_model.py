@@ -1,6 +1,6 @@
 from classification import xgboo
 from PlayerCollection import PlayerCollection
-from classification import svm, random_forest, mlp
+from classification import svm, random_forest, mlp, conv_net
 from modeling import get_save_results
 # File for testing models, as in the paper
 
@@ -33,9 +33,12 @@ def train_nn(count):
     get_save_results(X_train, X_test, y_train, y_test, model, 'NN')
 
 
+def train_conv_net(count):
+    pc = PlayerCollection(size=count)
+    X_train, X_test, y_train, y_test = pc.get_conv_data()
+    model = conv_net()
+    get_save_results(X_train, X_test, y_train, y_test, model, 'NN')
+
 if __name__ == '__main__':
     # Train all classifiers
-    train_svm(15000)
-    train_xgb(15000)
-    train_rf(15000)
-    train_nn(15000)
+    train_conv_net(15000)

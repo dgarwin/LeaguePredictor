@@ -4,10 +4,12 @@ from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 from keras.models import Sequential
 from keras.layers import Dense, Activation
-from keras.layers.core import Dropout
+from keras.layers.core import Dropout, Reshape
 from keras.wrappers.scikit_learn import KerasClassifier
 from sklearn.base import BaseEstimator
 from keras.callbacks import EarlyStopping
+from keras.layers.convolutional import Conv1D
+from keras.layers.pooling import GlobalMaxPooling1D
 # Models for training
 random_state = 42
 
@@ -71,6 +73,26 @@ class GridSearchNN(BaseEstimator):
 
     def predict(self, X):
         return self.model.predict(X)
+
+
+def conv_net():
+    model = Sequential()
+    model.add(Conv1D(nb_filter=20, filter_length=1, input_shape=(10, 55)))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
+    model.add(Reshape((20,)))
+    model.add(Dense(512))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(256))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(128))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(5, activation='softmax'))
+    model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+    return nn(lambda: model)
 
 
 def m(activation='relu', dropout=0.5, layers=3, layer_size=512, layer=Dense, cols=108):

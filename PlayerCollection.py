@@ -6,7 +6,7 @@ from LolApi import LolApi
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from collections import Counter
-from sklearn.feature_selection import SelectPercentile, f_classif
+from sklearn.feature_selection import SelectPercentile, f_classif, SelectKBest
 
 
 class PlayerCollection():
@@ -188,37 +188,80 @@ class PlayerCollection():
         game['division'] = division
         return game
 
-    def get_raw_transform(self, only_class=None):
-        for pid in self.raw.keys():
-            d = self.raw[pid][1]
+    @staticmethod
+    def filter_by_class(raw, only_class=None):
+        ret = {}
+        for pid in raw.keys():
+            d = raw[pid][1]
             if only_class is not None and d != only_class:
-                del self.raw[pid]
+                continue
             if d == 'MASTER' or d == 'CHALLENGER':
-                del self.raw[pid]
-        feature_vectors = [self.transform_game(game, player_id, self.raw[player_id][1])
-                           for player_id in self.raw
-                           for game in self.raw[player_id][0]]
+                continue
+            ret[pid] = raw[pid]
+        return ret
+
+    @staticmethod
+    def raw_to_df(raw):
+        feature_vectors = [PlayerCollection.transform_game(game, player_id, raw[player_id][1])
+                           for player_id in raw
+                           for game in raw[player_id][0]]
         df = pd.DataFrame(feature_vectors)
         df = df.fillna(0)
         df = df.drop(PlayerCollection.ignore, axis=1)
         df = pd.get_dummies(df, columns=PlayerCollection.categorical)
+        return df
 
+    @staticmethod
+    def aggregate_df(df):
         grouped = df.groupby(['playerId', 'division'])
         players = grouped.aggregate([np.mean, np.std])
         divisions = pd.DataFrame(players.index.tolist())[1]
         return players, divisions
 
-    def get_undivided_classification_data(self, samples=None):
-        players, divisions = self.get_raw_transform()
-        divisions = divisions.as_matrix()
-        players = players.as_matrix()
+    @staticmethod
+    def to_matrix(players, divisions):
+        division_matrix = divisions.as_matrix()
+        player_matrix = players.as_matrix()
+        return player_matrix, division_matrix
+
+    @staticmethod
+    def subsample(player_matrix, division_matrix, samples=None):
         if samples is not None:
-            players = players[0:samples, :]
-            divisions = divisions[0:samples]
-        return players, divisions
+            player_matrix = player_matrix[0:samples, :]
+            division_matrix = division_matrix[0:samples]
+        return player_matrix, division_matrix
+
+    def get_conv_data(self):
+        raw = PlayerCollection.filter_by_class(self.raw)
+        df = PlayerCollection.raw_to_df(raw)
+
+        divisions = np.array(df[['playerId', 'division']].groupby(['playerId'])\
+            .aggregate(lambda x: x.iloc[0]))
+        divisions = divisions.reshape((divisions.shape[0],))
+
+        df = df.drop(['division'], axis=1)
+
+        grouped = df.groupby(['playerId']).apply(pd.DataFrame.as_matrix)
+
+        lst = list(grouped)
+        players = np.zeros((len(lst), 10, 55))
+        for i in range(len(lst)):
+            players[i, 0:lst[i].shape[0], :] = lst[i]
+        stacked = np.dstack(players)
+        stacked = np.swapaxes(stacked, 2, 0)
+        stacked = np.swapaxes(stacked, 1, 2)
+        X_train, X_test, y_train, y_test = train_test_split(
+            stacked, divisions, random_state=42, stratify=divisions)
+        y_train = pd.get_dummies(y_train).as_matrix()
+        y_test = pd.get_dummies(y_test).as_matrix()
+        return X_train, X_test, y_train, y_test
 
     def get_classification_data(self, division_dummies=True, samples=None, percentile=100):
-        players, divisions = self.get_undivided_classification_data(samples)
+        raw = PlayerCollection.filter_by_class(self.raw)
+        df = PlayerCollection.raw_to_df(raw)
+        players, divisions = PlayerCollection.aggregate_df(df)
+        players, divisions = PlayerCollection.to_matrix(players, divisions)
+        players, divisions = PlayerCollection.subsample(players, divisions, samples)
         X_train, X_test, y_train, y_test = train_test_split(
             players, divisions, random_state=42, stratify=divisions)
 
@@ -234,3 +277,4 @@ class PlayerCollection():
         X_train = scaler.fit_transform(X_train)
         X_test = scaler.transform(X_test)
         return X_train, X_test, y_train, y_test
+
