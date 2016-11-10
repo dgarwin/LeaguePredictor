@@ -232,29 +232,54 @@ class PlayerCollection():
         return player_matrix, division_matrix
 
     def get_conv_data(self):
+        # Get raw data
         raw = PlayerCollection.filter_by_class(self.raw)
         df = PlayerCollection.raw_to_df(raw)
-
+        # Get Divisions
         divisions = np.array(df[['playerId', 'division']].groupby(['playerId'])\
             .aggregate(lambda x: x.iloc[0]))
         divisions = divisions.reshape((divisions.shape[0],))
-
         df = df.drop(['division'], axis=1)
-
+        # Get as matrix
         grouped = df.groupby(['playerId']).apply(pd.DataFrame.as_matrix)
-
+        # Filter out players with < 10 games and transform properly
         lst = list(grouped)
-        players = np.zeros((len(lst), 10, 55))
+        inds = []
         for i in range(len(lst)):
-            players[i, 0:lst[i].shape[0], :] = lst[i]
+            if lst[i].shape[0] == 10:
+                inds.append(i)
+        divisions = divisions[inds]
+        players = np.zeros((len(inds), 10, 55))
+        for i in range(len(inds)):
+            players[i, 0:lst[inds[i]].shape[0], :] = lst[inds[i]]
         stacked = np.dstack(players)
         stacked = np.swapaxes(stacked, 2, 0)
         stacked = np.swapaxes(stacked, 1, 2)
+        # Train/test/split
         X_train, X_test, y_train, y_test = train_test_split(
             stacked, divisions, random_state=42, stratify=divisions)
         y_train = pd.get_dummies(y_train).as_matrix()
         y_test = pd.get_dummies(y_test).as_matrix()
+        X_train, X_test = PlayerCollection.scale_conv(X_train, X_test)
         return X_train, X_test, y_train, y_test
+
+    @staticmethod
+    def scale_conv(x_train, x_test):
+        steps = x_train.shape[1]
+        train_count = x_train.shape[0]
+        test_count = x_test.shape[0]
+        features = x_train.shape[2]
+
+        x_train = x_train.reshape((train_count * steps, features))
+        x_test = x_test.reshape((test_count * steps, features))
+
+        scaler = StandardScaler()
+        x_train = scaler.fit_transform(x_train)
+        x_test = scaler.transform(x_test)
+
+        x_train = x_train.reshape((train_count, steps, features))
+        x_test = x_test.reshape((test_count, steps, features))
+        return x_train, x_test
 
     def get_classification_data(self, division_dummies=True, samples=None, percentile=100):
         raw = PlayerCollection.filter_by_class(self.raw)
